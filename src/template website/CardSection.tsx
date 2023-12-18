@@ -9,7 +9,7 @@ const CardsContainer = styled.section`
   gap: 50px;
   padding: 20px;
   position: relative; // Add relative positioning
-  margin-top: -200px; // Pull the container up to overlap with the section above. Adjust value as needed.
+  margin-top: -300px; // Pull the container up to overlap with the section above. Adjust value as needed.
   z-index: 10; // Ensure the cards are above the sections
 `;
 
