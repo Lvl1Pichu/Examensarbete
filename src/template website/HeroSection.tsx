@@ -42,7 +42,7 @@ const HeroSubtitle = styled.p`
 `;
 
 export const CallToAction = styled.button`
-  margin-top: 20px;
+  margin-top: 3rem;
   padding: 20px 25px;
   border-radius: 10px;
   border: none;

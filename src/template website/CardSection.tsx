@@ -42,6 +42,25 @@ const CardText = styled.p`
   color: #666;
 `;
 
+const CallToActionButton = styled.button`
+  padding: 10px 20px;
+  border-radius: 20px;
+  border: none;
+  background-color: #6c63ff;
+  color: white;
+  font-size: 18px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: #5a52e0;
+  }
+
+  &:focus {
+    outline: none;
+  }
+`;
+
 const CardSection: React.FC = () => (
   <CardsContainer>
     <Card>
@@ -52,6 +71,7 @@ const CardSection: React.FC = () => (
         strategy investor social proof. Churn rate paradigm shift innovator
         facebook android.
       </CardText>
+      <CallToActionButton>Learn More</CallToActionButton>
     </Card>
     <Card>
       <CardImage src={BusinessManager} alt="Business Manager" />
@@ -61,6 +81,7 @@ const CardSection: React.FC = () => (
         strategy investor social proof. Churn rate paradigm shift innovator
         facebook android.
       </CardText>
+      <CallToActionButton>Learn More</CallToActionButton>
     </Card>
   </CardsContainer>
 );

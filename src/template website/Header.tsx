@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import styled from "styled-components";
 
 const HeaderContainer = styled.header`
-  padding: 40px 0 0 0; // increase the padding-top as needed
+  padding: 40px 0 0 0;
   background-color: #f0f0f7;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 `;
@@ -11,8 +11,8 @@ const HeaderInnerContainer = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  max-width: 1200px; // adjust this value as needed for your layout
-  margin: 0 auto; // this centers the div
+  max-width: 1400px;
+  margin: 0 auto;
   width: 100%;
 `;
 
