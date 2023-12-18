@@ -2,12 +2,18 @@ import React, { useState } from "react";
 import styled from "styled-components";
 
 const HeaderContainer = styled.header`
+  padding: 40px 0 0 0; // increase the padding-top as needed
+  background-color: #f0f0f7;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+`;
+
+const HeaderInnerContainer = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 50px;
-  background-color: #f0f0f7;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  max-width: 1200px; // adjust this value as needed for your layout
+  margin: 0 auto; // this centers the div
+  width: 100%;
 `;
 
 const LogoLink = styled.a`
@@ -82,35 +88,37 @@ const Header: React.FC = () => {
 
   return (
     <HeaderContainer>
-      <LogoLink href="#">
-        <LogoImage
-          src="https://cdn.dorik.com/5e373b6c43a72a001f56dbf6/images/dPay_pjbcb488.svg"
-          alt="dPay Logo"
-        />
-      </LogoLink>
-      <Nav>
-        <NavLink href="#">Features</NavLink>
-        <NavLink href="#">Testimonials</NavLink>
-        <NavLink href="#">Pricing</NavLink>
-        <ContactLink href="#">Contact Sales</ContactLink>
-      </Nav>
-      <HamburgerIcon onClick={() => setMenuOpen(!isMenuOpen)}>
-        &#9776;
-      </HamburgerIcon>
-      <Dropdown className={isMenuOpen ? "active" : ""}>
-        <NavLink href="#" onClick={() => setMenuOpen(false)}>
-          Features
-        </NavLink>
-        <NavLink href="#" onClick={() => setMenuOpen(false)}>
-          Testimonials
-        </NavLink>
-        <NavLink href="#" onClick={() => setMenuOpen(false)}>
-          Pricing
-        </NavLink>
-        <ContactLink href="#" onClick={() => setMenuOpen(false)}>
-          Contact Sales
-        </ContactLink>
-      </Dropdown>
+      <HeaderInnerContainer>
+        <LogoLink href="#">
+          <LogoImage
+            src="https://cdn.dorik.com/5e373b6c43a72a001f56dbf6/images/dPay_pjbcb488.svg"
+            alt="dPay Logo"
+          />
+        </LogoLink>
+        <Nav>
+          <NavLink href="#">Features</NavLink>
+          <NavLink href="#">Testimonials</NavLink>
+          <NavLink href="#">Pricing</NavLink>
+          <ContactLink href="#">Contact Sales</ContactLink>
+        </Nav>
+        <HamburgerIcon onClick={() => setMenuOpen(!isMenuOpen)}>
+          &#9776;
+        </HamburgerIcon>
+        <Dropdown className={isMenuOpen ? "active" : ""}>
+          <NavLink href="#" onClick={() => setMenuOpen(false)}>
+            Features
+          </NavLink>
+          <NavLink href="#" onClick={() => setMenuOpen(false)}>
+            Testimonials
+          </NavLink>
+          <NavLink href="#" onClick={() => setMenuOpen(false)}>
+            Pricing
+          </NavLink>
+          <ContactLink href="#" onClick={() => setMenuOpen(false)}>
+            Contact Sales
+          </ContactLink>
+        </Dropdown>
+      </HeaderInnerContainer>
     </HeaderContainer>
   );
 };
