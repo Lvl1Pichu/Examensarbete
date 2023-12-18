@@ -32,7 +32,12 @@ const NavLink = styled.a`
 
 const Header: React.FC = () => (
   <HeaderContainer>
-    <Logo>dPay.</Logo>
+    <a>
+      <img
+        src="https://cdn.dorik.com/5e373b6c43a72a001f56dbf6/images/dPay_pjbcb488.svg"
+        width="80px"
+      />
+    </a>
     <Nav>
       <NavLink href="#">Features</NavLink>
       <NavLink href="#">Testimonials</NavLink>
