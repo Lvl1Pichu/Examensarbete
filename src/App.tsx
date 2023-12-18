@@ -1,13 +1,12 @@
 import "./App.css";
+import Header from "./template website/Header";
+import { Home } from "./template website/Home";
 
 function App() {
   return (
     <>
-      <div>
-        <h1>
-          <p>hej din apa</p>
-        </h1>
-      </div>
+      <Header></Header>
+      <Home></Home>
     </>
   );
 }
