@@ -19,14 +19,16 @@ const HeroContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   padding: 50px;
   background-color: #f0f0f7;
+  min-height: 70vh;
 `;
 
 const HeroTitle = styled.h1`
   font-size: 60px;
   text-align: center;
-  color: #4b0082;
+  color: #48347c;
 `;
 
 const Container = styled.div`
@@ -43,7 +45,7 @@ export const CallToAction = styled.button`
   padding: 10px 25px;
   border-radius: 10px;
   border: none;
-  background-color: #4b0082;
+  background-color: #48347c;
   color: white;
   font-size: 20px;
   cursor: pointer;

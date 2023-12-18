@@ -1,13 +1,13 @@
 import React from "react";
 import HeroSection from "./HeroSection";
-import FinanceManagerCard from "./CardSection";
 import SecondaryHeroSection from "./SecondaryHeroSection";
+import CardSection from "./CardSection";
 
 export const Home: React.FC = () => {
   return (
     <>
       <HeroSection />
-      <FinanceManagerCard></FinanceManagerCard>
+      <CardSection></CardSection>
       <SecondaryHeroSection></SecondaryHeroSection>
     </>
   );

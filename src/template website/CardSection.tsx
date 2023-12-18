@@ -1,7 +1,7 @@
-import React from 'react';
-import styled from 'styled-components';
-import BusinessIntelligence from '../resources/BusinessIntelligence.png'; // Adjust the path as necessary
-import BusinessManager from '../resources/BusinesManager.png'; // Adjust the path as necessary
+import React from "react";
+import styled from "styled-components";
+import BusinessIntelligence from "../resources/BusinessIntelligence.png"; // Adjust the path as necessary
+import BusinessManager from "../resources/BusinesManager.png"; // Adjust the path as necessary
 
 const CardsContainer = styled.section`
   display: flex;
