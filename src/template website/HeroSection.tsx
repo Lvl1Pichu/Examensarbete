@@ -16,7 +16,6 @@ const HeroContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
   padding: 50px;
   background-color: #f0f0f7;
   min-height: 70vh;
@@ -30,6 +29,7 @@ const HeroTitle = styled.h1`
   width: 100%;
   max-width: 900px;
   font-weight: 500;
+  margin-top: 10vh;
 `;
 
 const HeroSubtitle = styled.p`

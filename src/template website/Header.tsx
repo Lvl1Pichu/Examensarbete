@@ -22,7 +22,7 @@ const LogoLink = styled.a`
 `;
 
 const LogoImage = styled.img`
-  width: 80px;
+  width: 100px;
 `;
 
 const Nav = styled.nav`
