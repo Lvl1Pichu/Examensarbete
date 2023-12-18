@@ -6,21 +6,27 @@ import BusinessManager from "../resources/BusinesManager.png"; // Adjust the pat
 const CardsContainer = styled.section`
   display: flex;
   justify-content: center;
-  gap: 20px;
+  gap: 170px;
   padding: 20px;
+  position: relative; // Add relative positioning
+  margin-top: -100px; // Pull the container up to overlap with the section above. Adjust value as needed.
+  z-index: 10; // Ensure the cards are above the sections
 `;
 
 const Card = styled.div`
-  flex-basis: 45%;
+  flex-basis: 35%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
   background-color: #fff;
   padding: 20px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
-  text-align: center; // Center the content inside the card
 `;
 
 const CardImage = styled.img`
-  width: 20%; // Set image width or max-width as required
+  width: 25%; // Set image width or max-width as required
   margin-bottom: 20px; // Add some space between the image and the text
 `;
 

@@ -29,10 +29,13 @@ const HeroTitle = styled.h1`
   font-size: 60px;
   text-align: center;
   color: #48347c;
+  width: 100%;
+  max-width: 1000px;
 `;
 
 const Container = styled.div`
-  width: 70%;
+  margin-top: 2rem;
+  width: 60%;
 `;
 
 const HeroSubtitle = styled.p`
@@ -42,10 +45,10 @@ const HeroSubtitle = styled.p`
 
 export const CallToAction = styled.button`
   margin-top: 20px;
-  padding: 10px 25px;
+  padding: 20px 25px;
   border-radius: 10px;
   border: none;
-  background-color: #48347c;
+  background-color: #6f03fc;
   color: white;
   font-size: 20px;
   cursor: pointer;
