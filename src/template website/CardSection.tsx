@@ -6,15 +6,15 @@ import BusinessManager from "../resources/BusinesManager.png"; // Adjust the pat
 const CardsContainer = styled.section`
   display: flex;
   justify-content: center;
-  gap: 170px;
+  gap: 50px;
   padding: 20px;
   position: relative; // Add relative positioning
-  margin-top: -100px; // Pull the container up to overlap with the section above. Adjust value as needed.
+  margin-top: -200px; // Pull the container up to overlap with the section above. Adjust value as needed.
   z-index: 10; // Ensure the cards are above the sections
 `;
 
 const Card = styled.div`
-  flex-basis: 35%;
+  flex-basis: 40%;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -26,17 +26,19 @@ const Card = styled.div`
 `;
 
 const CardImage = styled.img`
-  width: 25%; // Set image width or max-width as required
+  width: 30%; // Set image width or max-width as required
   margin-bottom: 20px; // Add some space between the image and the text
 `;
 
 const CardTitle = styled.h2`
-  font-size: 24px;
+  font-size: 32px;
   color: #4b0082;
+  font-weight: 500;
 `;
 
 const CardText = styled.p`
-  font-size: 16px;
+  font-size: 18px;
+  line-height: 30px;
   color: #666;
 `;
 
@@ -46,14 +48,18 @@ const CardSection: React.FC = () => (
       <CardImage src={BusinessIntelligence} alt="Business Intelligence" />
       <CardTitle>Your Special Finance Manager</CardTitle>
       <CardText>
-        Short description or pitch for the finance manager feature.
+        Churn rate paradigm shift innovator facebook android infographic
+        strategy investor social proof. Churn rate paradigm shift innovator
+        facebook android.
       </CardText>
     </Card>
     <Card>
       <CardImage src={BusinessManager} alt="Business Manager" />
       <CardTitle>Receive Payment for Everything</CardTitle>
       <CardText>
-        Short description or pitch for the payment receiving feature.
+        Churn rate paradigm shift innovator facebook android infographic
+        strategy investor social proof. Churn rate paradigm shift innovator
+        facebook android.
       </CardText>
     </Card>
   </CardsContainer>

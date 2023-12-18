@@ -4,13 +4,10 @@ import styled from "styled-components";
 const HeroSection: React.FC = () => (
   <HeroContainer>
     <HeroTitle>The New Smart Finance & Payment Platform</HeroTitle>
-    <Container>
-      <HeroSubtitle>
-        Network effects pitch holy grail niche market non-disclosure agreement
-        long tail assets. Bandwidth branding seed round vesting period
-        technology.
-      </HeroSubtitle>
-    </Container>
+    <HeroSubtitle>
+      Network effects pitch holy grail niche market non-disclosure agreement
+      long tail assets. Bandwidth branding seed round vesting period technology.
+    </HeroSubtitle>
     <CallToAction>Contact Sales</CallToAction>
   </HeroContainer>
 );
@@ -23,24 +20,25 @@ const HeroContainer = styled.div`
   padding: 50px;
   background-color: #f0f0f7;
   min-height: 70vh;
+  text-align: center;
 `;
 
 const HeroTitle = styled.h1`
-  font-size: 60px;
+  font-size: 70px;
   text-align: center;
   color: #48347c;
   width: 100%;
-  max-width: 1000px;
-`;
-
-const Container = styled.div`
-  margin-top: 2rem;
-  width: 60%;
+  max-width: 900px;
+  font-weight: 500;
 `;
 
 const HeroSubtitle = styled.p`
+  margin-top: 2rem;
   font-size: 20px;
   text-align: center;
+  max-width: 800px;
+  line-height: 35px;
+  color: rgba(102, 102, 102, 0.8);
 `;
 
 export const CallToAction = styled.button`

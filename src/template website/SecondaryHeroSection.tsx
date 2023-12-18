@@ -30,6 +30,8 @@ const SecondaryHeroButton = styled(CallToAction)``;
 const SecondaryHeroSection: React.FC = () => (
   <>
     <SecondaryHeroContainer>
+      <CardSection></CardSection>
+
       <SecondaryHeroTitle>Join Our Platform</SecondaryHeroTitle>
       <SecondaryHeroSubtitle>
         Get access to all the resources and a network of like-minded individuals
