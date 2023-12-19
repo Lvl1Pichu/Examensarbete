@@ -1,16 +1,45 @@
 import React from "react";
 import styled from "styled-components";
-import BusinessIntelligence from "../resources/BusinessIntelligence.png"; // Adjust the path as necessary
-import BusinessManager from "../resources/BusinesManager.png"; // Adjust the path as necessary
+import BusinessIntelligence from "../resources/BusinessIntelligence.png";
+import BusinessManager from "../resources/BusinesManager.png";
+
+const CardSection: React.FC = () => (
+  <CardsContainer>
+    <Card>
+      <CardImage src={BusinessIntelligence} alt="Business Intelligence" />
+      <CardTitle>Your Special Finance Manager</CardTitle>
+      <CardText>
+        Churn rate paradigm shift innovator facebook android infographic
+        strategy investor social proof. Churn rate paradigm shift innovator
+        facebook android.
+      </CardText>
+      <CallToActionButton>Learn More</CallToActionButton>
+    </Card>
+    <Card>
+      <CardImage src={BusinessManager} alt="Business Manager" />
+      <CardTitle>Receive Payment for Everything</CardTitle>
+      <CardText>
+        Churn rate paradigm shift innovator facebook android infographic
+        strategy investor social proof. Churn rate paradigm shift innovator
+        facebook android.
+      </CardText>
+      <CallToActionButton>Learn More</CallToActionButton>
+    </Card>
+  </CardsContainer>
+);
 
 const CardsContainer = styled.section`
   display: flex;
   justify-content: center;
   gap: 50px;
   padding: 20px;
-  position: relative; // Add relative positioning
-  margin-top: -300px; // Pull the container up to overlap with the section above. Adjust value as needed.
-  z-index: 10; // Ensure the cards are above the sections
+  position: relative;
+  z-index: 10;
+
+  @media (max-width: 700px) {
+    display: flex;
+    flex-direction: column;
+  }
 `;
 
 const Card = styled.div`
@@ -26,8 +55,8 @@ const Card = styled.div`
 `;
 
 const CardImage = styled.img`
-  width: 30%; // Set image width or max-width as required
-  margin-bottom: 20px; // Add some space between the image and the text
+  width: 30%;
+  margin-bottom: 20px;
 `;
 
 const CardTitle = styled.h2`
@@ -60,30 +89,4 @@ const CallToActionButton = styled.button`
     outline: none;
   }
 `;
-
-const CardSection: React.FC = () => (
-  <CardsContainer>
-    <Card>
-      <CardImage src={BusinessIntelligence} alt="Business Intelligence" />
-      <CardTitle>Your Special Finance Manager</CardTitle>
-      <CardText>
-        Churn rate paradigm shift innovator facebook android infographic
-        strategy investor social proof. Churn rate paradigm shift innovator
-        facebook android.
-      </CardText>
-      <CallToActionButton>Learn More</CallToActionButton>
-    </Card>
-    <Card>
-      <CardImage src={BusinessManager} alt="Business Manager" />
-      <CardTitle>Receive Payment for Everything</CardTitle>
-      <CardText>
-        Churn rate paradigm shift innovator facebook android infographic
-        strategy investor social proof. Churn rate paradigm shift innovator
-        facebook android.
-      </CardText>
-      <CallToActionButton>Learn More</CallToActionButton>
-    </Card>
-  </CardsContainer>
-);
-
 export default CardSection;

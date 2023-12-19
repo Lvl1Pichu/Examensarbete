@@ -1,6 +1,46 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 
+const Header: React.FC = () => {
+  const [isMenuOpen, setMenuOpen] = useState(false);
+
+  return (
+    <HeaderContainer>
+      <HeaderInnerContainer>
+        <LogoLink href="#">
+          <LogoImage
+            src="https://cdn.dorik.com/5e373b6c43a72a001f56dbf6/images/dPay_pjbcb488.svg"
+            alt="dPay Logo"
+          />
+        </LogoLink>
+        <Nav>
+          <NavLink href="#">Features</NavLink>
+          <NavLink href="#">Testimonials</NavLink>
+          <NavLink href="#">Pricing</NavLink>
+          <ContactLink href="#">Contact Sales</ContactLink>
+        </Nav>
+        <HamburgerIcon onClick={() => setMenuOpen(!isMenuOpen)}>
+          &#9776;
+        </HamburgerIcon>
+        <Dropdown className={isMenuOpen ? "active" : ""}>
+          <NavLink href="#" onClick={() => setMenuOpen(false)}>
+            Features
+          </NavLink>
+          <NavLink href="#" onClick={() => setMenuOpen(false)}>
+            Testimonials
+          </NavLink>
+          <NavLink href="#" onClick={() => setMenuOpen(false)}>
+            Pricing
+          </NavLink>
+          <ContactLink href="#" onClick={() => setMenuOpen(false)}>
+            Contact Sales
+          </ContactLink>
+        </Dropdown>
+      </HeaderInnerContainer>
+    </HeaderContainer>
+  );
+};
+
 const HeaderContainer = styled.header`
   padding: 40px 0 0 0;
   background-color: #f0f0f7;
@@ -82,45 +122,5 @@ const Dropdown = styled.div`
     display: flex;
   }
 `;
-
-const Header: React.FC = () => {
-  const [isMenuOpen, setMenuOpen] = useState(false);
-
-  return (
-    <HeaderContainer>
-      <HeaderInnerContainer>
-        <LogoLink href="#">
-          <LogoImage
-            src="https://cdn.dorik.com/5e373b6c43a72a001f56dbf6/images/dPay_pjbcb488.svg"
-            alt="dPay Logo"
-          />
-        </LogoLink>
-        <Nav>
-          <NavLink href="#">Features</NavLink>
-          <NavLink href="#">Testimonials</NavLink>
-          <NavLink href="#">Pricing</NavLink>
-          <ContactLink href="#">Contact Sales</ContactLink>
-        </Nav>
-        <HamburgerIcon onClick={() => setMenuOpen(!isMenuOpen)}>
-          &#9776;
-        </HamburgerIcon>
-        <Dropdown className={isMenuOpen ? "active" : ""}>
-          <NavLink href="#" onClick={() => setMenuOpen(false)}>
-            Features
-          </NavLink>
-          <NavLink href="#" onClick={() => setMenuOpen(false)}>
-            Testimonials
-          </NavLink>
-          <NavLink href="#" onClick={() => setMenuOpen(false)}>
-            Pricing
-          </NavLink>
-          <ContactLink href="#" onClick={() => setMenuOpen(false)}>
-            Contact Sales
-          </ContactLink>
-        </Dropdown>
-      </HeaderInnerContainer>
-    </HeaderContainer>
-  );
-};
 
 export default Header;

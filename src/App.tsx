@@ -1,6 +1,6 @@
 import "./App.css";
 import Header from "./template website/Header";
-import { Home } from "./template website/Home";
+import { Home } from "./template website/HomePage";
 
 function App() {
   return (
