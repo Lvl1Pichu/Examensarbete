@@ -1,13 +1,13 @@
 import React from "react";
 import HeroSection from "./HeroSection";
 import SecondaryHeroSection from "./SecondaryHeroSection";
-import { CometChatUsersWithMessages } from "@cometchat/chat-uikit-react";
+import Header from "./Header";
 
 export const Home: React.FC = () => {
   return (
     <>
+      <Header></Header>
       <HeroSection></HeroSection>
-      <CometChatUsersWithMessages />
       <SecondaryHeroSection></SecondaryHeroSection>
     </>
   );

@@ -1,8 +1,15 @@
 import React, { useState } from "react";
 import styled from "styled-components";
+import { useNavigate } from "react-router-dom";
 
 const Header: React.FC = () => {
   const [isMenuOpen, setMenuOpen] = useState(false);
+
+  const navigate = useNavigate();
+
+  const navigateToLogin = () => {
+    navigate("/log-in");
+  };
 
   return (
     <HeaderContainer>
@@ -17,6 +24,9 @@ const Header: React.FC = () => {
           <NavLink href="#">Features</NavLink>
           <NavLink href="#">Testimonials</NavLink>
           <NavLink href="#">Pricing</NavLink>
+          <NavLink href="#" onClick={navigateToLogin}>
+            Log in
+          </NavLink>
           <ContactLink href="#">Contact Sales</ContactLink>
         </Nav>
         <HamburgerIcon onClick={() => setMenuOpen(!isMenuOpen)}>
@@ -31,6 +41,9 @@ const Header: React.FC = () => {
           </NavLink>
           <NavLink href="#" onClick={() => setMenuOpen(false)}>
             Pricing
+          </NavLink>
+          <NavLink href="#" onClick={() => setMenuOpen(false)}>
+            Log in
           </NavLink>
           <ContactLink href="#" onClick={() => setMenuOpen(false)}>
             Contact Sales
