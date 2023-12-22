@@ -10,8 +10,16 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@cometchat/chat-sdk-javascript": "^4.0.3",
+    "@cometchat/chat-uikit-react": "^4.1.1",
+    "@cometchat/uikit-elements": "^4.1.3",
+    "@cometchat/uikit-resources": "^4.1.3",
+    "@cometchat/uikit-shared": "^4.1.3",
+    "@types/styled-components": "^5.1.34",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.21.0",
+    "styled-components": "^6.1.1"
   },
   "devDependencies": {
     "@types/react": "^18.2.15",

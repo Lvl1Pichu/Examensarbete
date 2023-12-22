@@ -1,13 +1,14 @@
 import "./App.css";
+import { Outlet } from "react-router-dom";
+import Header from "./template website/Header";
 
 function App() {
   return (
     <>
-      <div>
-        <h1>
-          <p>hej din apa</p>
-        </h1>
-      </div>
+      <Header></Header>
+      <main>
+        <Outlet />
+      </main>
     </>
   );
 }
