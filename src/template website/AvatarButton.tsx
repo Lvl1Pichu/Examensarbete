@@ -43,11 +43,11 @@ const AvatarButton = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background-color 0.3s ease; // Add a smooth transition effect
+  transition: background-color 0.3s ease;
 
   &:hover {
     background-color: #68347c;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); // Add a subtle box shadow on hover
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
   }
 `;
 
