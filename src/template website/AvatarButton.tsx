@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { useState } from "react";
+import { ChatModal } from "./ChatModal";
 
 export const ChatAvatarButton = () => {
   const [ChatOpen, setChatOpen] = useState(false);
@@ -20,10 +21,9 @@ export const ChatAvatarButton = () => {
 
       {ChatOpen && (
         <ModalOverlay onClick={closeChat}>
-          <ChatModal>
-            {/* Content of the chat modal */}
-            Chat Window Content
-          </ChatModal>
+          <ChatModalContainer>
+            <ChatModal></ChatModal>
+          </ChatModalContainer>
         </ModalOverlay>
       )}
     </>
@@ -69,7 +69,7 @@ const ModalOverlay = styled.div`
   justify-content: center;
 `;
 
-const ChatModal = styled.div`
+const ChatModalContainer = styled.div`
   background-color: #48347c;
   padding: 20px;
   border-radius: 8px;
