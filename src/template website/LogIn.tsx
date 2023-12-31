@@ -1,69 +1,86 @@
-import React from "react";
-import { styled } from "styled-components";
-import { useNavigate } from "react-router-dom";
+import { LockOutlined } from "@mui/icons-material";
+import {
+  Container,
+  CssBaseline,
+  Box,
+  Avatar,
+  Typography,
+  TextField,
+  Button,
+  Grid,
+} from "@mui/material";
+import { useState } from "react";
+import { Link } from "react-router-dom";
 
-export const LogIn: React.FC = () => {
-  const navigate = useNavigate();
-  const [username, setUsername] = React.useState("");
-  const [password, setPassword] = React.useState("");
+const Login = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-  function Register() {
-    console.log("You are now logged in");
-    navigate("registerPage");
-  }
-
-  const handleSubmit = () => {
-    event?.preventDefault;
-    if (database.find((entry) => entry.username === username)) {
-      console.log("username Checks out");
-      if (database.find((entry) => entry.password === password)) {
-        console.log("logged in");
-      }
-    }
-  };
-
-  const database = [
-    {
-      username: "user1",
-      password: "pass1",
-    },
-  ];
+  const handleLogin = () => {};
 
   return (
     <>
-      <div>
-        <LogInContainer>
-          <form onSubmit={handleSubmit}>
-            <label>
-              Username:
-              <input
-                type="text"
-                value={username}
-                onChange={(event) => setUsername(event.target.value)}
-              />
-            </label>
-            <label>
-              Password:
-              <input
-                type="text"
-                value={password}
-                onChange={(event) => setPassword(event.target.value)}
-              />
-            </label>
-            {/* <input type="submit" /> */}
-          </form>
-          <button onClick={handleSubmit}>Log in</button>
-          <div>
-            <button onClick={Register}>Register</button>
-          </div>
-        </LogInContainer>
-      </div>
+      <Container maxWidth="xs">
+        <CssBaseline />
+        <Box
+          sx={{
+            mt: 20,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+          }}
+        >
+          <Avatar sx={{ m: 1, bgcolor: "#48347c" }}>
+            <LockOutlined />
+          </Avatar>
+          <Typography variant="h5">Login</Typography>
+          <Box sx={{ mt: 1 }}>
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              id="email"
+              label="Email Address"
+              name="email"
+              autoFocus
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              sx={{ borderColor: "#48347c" }}
+            />
+
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              id="password"
+              name="password"
+              label="Password"
+              type="password"
+              value={password}
+              onChange={(e) => {
+                setPassword(e.target.value);
+              }}
+              sx={{ borderColor: "#48347c" }}
+            />
+
+            <Button
+              fullWidth
+              variant="contained"
+              sx={{ mt: 3, mb: 2, bgcolor: "#48347c" }}
+              onClick={handleLogin}
+            >
+              Login
+            </Button>
+            <Grid container justifyContent={"flex-end"}>
+              <Grid item>
+                <Link to="/register">Don't have an account? Register</Link>
+              </Grid>
+            </Grid>
+          </Box>
+        </Box>
+      </Container>
     </>
   );
 };
 
-const LogInContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 20%;
-`;
+export default Login;
