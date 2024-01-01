@@ -1,20 +1,9 @@
-import {
-  CometChatMessageHeader,
-  CometChatMessages,
-  CometChatMessageComposer,
-} from "@cometchat/chat-uikit-react";
 import styled from "styled-components";
 
 export const ChatModal = () => {
   return (
     <ChatContainer>
-      <CometChatMessageHeader />
-      <ChatMessagesContainer>
-        <CometChatMessages />
-      </ChatMessagesContainer>
-      <ChatComposerContainer>
-        <CometChatMessageComposer />
-      </ChatComposerContainer>
+      <form></form>
     </ChatContainer>
   );
 };
