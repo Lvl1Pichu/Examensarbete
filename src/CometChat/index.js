@@ -1,14 +1,11 @@
 import { UIKitSettingsBuilder } from "@cometchat/uikit-shared";
 import { CometChatUIKit } from "@cometchat/chat-uikit-react";
-import fs from "fs";
-
-const UIConstants = fs.readFileSync("./config.json").toJSON();
 
 //create the builder
 export const UIKitSettings = new UIKitSettingsBuilder()
-  .setAppId(UIConstants.APP_ID)
-  .setRegion(UIConstants.REGION)
-  .setAuthKey(UIConstants.AUTH_KEY)
+  .setAppId("2500920a8d5a66f8")
+  .setRegion("EU")
+  .setAuthKey("64b7d20f19139473eb976616d751e447b3a8f516")
   .subscribePresenceForFriends()
   .build();
 

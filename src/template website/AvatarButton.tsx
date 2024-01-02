@@ -3,7 +3,7 @@ import { useState } from "react";
 import { ChatModal } from "./ChatModal";
 
 export const ChatAvatarButton = () => {
-  const [ChatOpen, setChatOpen] = useState(false);
+  const [chatOpen, setChatOpen] = useState(false);
 
   const openChat = () => {
     setChatOpen(true);
@@ -19,10 +19,11 @@ export const ChatAvatarButton = () => {
         <AvatarImage src="src\resources\ChatPicture.png" alt="User Avatar" />
       </AvatarButton>
 
-      {ChatOpen && (
-        <ModalOverlay onClick={closeChat}>
+      {chatOpen && (
+        <ModalOverlay>
           <ChatModalContainer>
-            <ChatModal></ChatModal>
+            <CloseButton onClick={closeChat}>Close</CloseButton>
+            <ChatModal />
           </ChatModalContainer>
         </ModalOverlay>
       )}
@@ -36,9 +37,9 @@ const AvatarButton = styled.button`
   right: 20px;
   width: 80px;
   height: 80px;
-  border: 2px solid #48347c;
+  border: 2px solid #6f03fc;
   border-radius: 50%;
-  background-color: #48347c;
+  background-color: #6f03fc;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -59,20 +60,34 @@ const AvatarImage = styled.img`
 
 const ModalOverlay = styled.div`
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
+  bottom: 20px;
+  right: 20px;
   display: flex;
-  align-items: center;
-  justify-content: center;
+  align-items: flex-end;
+  justify-content: flex-end;
+  width: auto;
+  height: auto;
 `;
 
 const ChatModalContainer = styled.div`
-  background-color: #48347c;
+  background-color: #6f03fc;
   padding: 20px;
   border-radius: 8px;
   max-width: 400px;
   width: 100%;
+`;
+
+const CloseButton = styled.button`
+  background-color: #fff;
+  color: #6f03fc;
+  border: none;
+  padding: 8px;
+  cursor: pointer;
+  border-radius: 4px;
+  margin-bottom: 10px;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: #f0f0f0;
+  }
 `;

@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { COMETCHAT_CONSTANTS } from "./CONSTS";
+import { CometChat } from "@cometchat/chat-sdk-javascript";
 
 export default class Chat extends Component {
   constructor(props) {

@@ -24,9 +24,7 @@ const Header: React.FC = () => {
           <NavLink href="#">Features</NavLink>
           <NavLink href="#">Testimonials</NavLink>
           <NavLink href="#">Pricing</NavLink>
-          <NavLink href="#" onClick={navigateToLogin}>
-            Log in
-          </NavLink>
+          <NavLink onClick={navigateToLogin}>Log in</NavLink>
           <ContactLink href="#">Contact Sales</ContactLink>
         </Nav>
         <HamburgerIcon onClick={() => setMenuOpen(!isMenuOpen)}>
