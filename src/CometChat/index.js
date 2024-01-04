@@ -1,7 +1,6 @@
 import { UIKitSettingsBuilder } from "@cometchat/uikit-shared";
 import { CometChatUIKit } from "@cometchat/chat-uikit-react";
 
-//create the builder
 export const UIKitSettings = new UIKitSettingsBuilder()
   .setAppId("2500920a8d5a66f8")
   .setRegion("EU")
@@ -9,10 +8,8 @@ export const UIKitSettings = new UIKitSettingsBuilder()
   .subscribePresenceForFriends()
   .build();
 
-//Initialize CometChat UIKit
 CometChatUIKit.init(UIKitSettings)
   .then(() => {
     console.log("Initialization completed successfully");
-    // You can now call login function.
   })
   .catch(console.log);

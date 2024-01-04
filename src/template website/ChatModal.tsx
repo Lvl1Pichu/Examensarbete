@@ -1,6 +1,8 @@
+import { TextField } from "@mui/material";
 import { ChangeEvent, FormEvent, useState } from "react";
 import styled from "styled-components";
-import { CometChat } from "@cometchat/chat-sdk-javascript";
+
+// import { CometChat } from "@cometchat/chat-sdk-javascript";
 
 export const ChatModal = () => {
   const [formData, setFormData] = useState({
@@ -18,30 +20,30 @@ export const ChatModal = () => {
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
-    // Handle form submission logic here
-    try {
-      const user = await CometChat.login();
-      const group = new CometChat.createGroup(group);
+    console.log(formData);
+    // try {
+    //   const user = await CometChat.login();
+    //   const group = new CometChat.createGroup(group);
 
-      const textMessage = new CometChat.TextMessage(
-        formData.problem,
-        CometChat.MESSAGE_TYPE.TEXT,
-        CometChat.RECEIVER_TYPE.GROUP
-      );
+    //   const textMessage = new CometChat.TextMessage(
+    //     formData.problem,
+    //     CometChat.MESSAGE_TYPE.TEXT,
+    //     CometChat.RECEIVER_TYPE.GROUP
+    //   );
 
-      await CometChat.sendMessage(textMessage);
-    } catch (error) {
-      console.error("Error:", error);
-    }
+    //   await CometChat.sendMessage(textMessage);
+    // } catch (error) {
+    //   console.error("Error:", error);
+    // }
   };
 
   return (
     <ChatContainer>
       <form onSubmit={handleSubmit}>
         <FormGroup>
-          <label htmlFor="name">Name:</label>
-          <input
-            type="text"
+          <TextField
+            label="Name"
+            variant="outlined"
             id="name"
             name="name"
             value={formData.name}
@@ -50,9 +52,9 @@ export const ChatModal = () => {
           />
         </FormGroup>
         <FormGroup>
-          <label htmlFor="email">Email:</label>
-          <input
-            type="email"
+          <TextField
+            label="Email"
+            variant="outlined"
             id="email"
             name="email"
             value={formData.email}
@@ -61,16 +63,19 @@ export const ChatModal = () => {
           />
         </FormGroup>
         <FormGroup>
-          <label htmlFor="problem">Describe the problem:</label>
-          <textarea
+          <TextField
+            label="Describe the problem"
+            variant="outlined"
             id="problem"
             name="problem"
+            multiline
+            rows={4}
             value={formData.problem}
             onChange={handleChange}
             required
           />
         </FormGroup>
-        <Button type="submit">Submit</Button>
+        <SubmitButton type="submit">Submit</SubmitButton>
       </form>
     </ChatContainer>
   );
@@ -92,17 +97,9 @@ const FormGroup = styled.div`
     display: block;
     margin-bottom: 5px;
   }
-
-  input,
-  textarea {
-    width: 100%;
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-  }
 `;
 
-const Button = styled.button`
+const SubmitButton = styled.button`
   background-color: #48347c;
   color: #fff;
   padding: 10px 15px;

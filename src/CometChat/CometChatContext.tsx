@@ -1,7 +1,5 @@
-// CometChatContext.js
-import React, { createContext, useContext } from "react";
+import { createContext, useContext } from "react";
 import { CometChat } from "@cometchat/chat-sdk-javascript";
-import { COMETCHAT_CONSTANTS } from "./Constants.js";
 
 const CometChatContext = createContext<any>(null);
 
@@ -23,7 +21,10 @@ export const CometChatProvider = ({ children }) => {
   const loginUser = async () => {
     try {
       const userId = generateUniqueId();
-      const user = await CometChat.login(userId, COMETCHAT_CONSTANTS.AUTH_KEY);
+      const user = await CometChat.login(
+        userId,
+        "64b7d20f19139473eb976616d751e447b3a8f516"
+      );
       return user;
     } catch (error) {
       console.error("Error logging in:", error);

@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { COMETCHAT_CONSTANTS } from "./CONSTS";
+import { COMETCHAT_CONSTANTS } from "./Constants";
 import { CometChat } from "@cometchat/chat-sdk-javascript";
 
 export default class Chat extends Component {
@@ -33,7 +33,7 @@ export default class Chat extends Component {
 
   login() {
     let UID = "UID";
-    CometChat.login(UID, COMETCHAT_CONSTANTS.AUTH_KEY).then(
+    CometChat.login(UID, "64b7d20f19139473eb976616d751e447b3a8f516").then(
       (user) => {
         this.setState({ user });
       },
