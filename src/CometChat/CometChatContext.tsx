@@ -1,9 +1,22 @@
-import { createContext, useContext } from "react";
+import { ReactNode, createContext, useContext } from "react";
 import { CometChat } from "@cometchat/chat-sdk-javascript";
 
-const CometChatContext = createContext<any>(null);
+type CometChatContextType = {
+  loginUser: () => void;
+  sendMessage: (groupId: string, text: string) => void;
+};
 
-export const CometChatProvider = ({ children }) => {
+type CometChatProviderProps = {
+  children: ReactNode;
+};
+
+const CometChatContext = createContext<CometChatContextType | undefined>(
+  undefined
+);
+
+export const CometChatProvider: React.FC<CometChatProviderProps> = ({
+  children,
+}) => {
   const generateUniqueId = () => {
     const characters =
       "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
