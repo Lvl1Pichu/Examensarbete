@@ -2,6 +2,9 @@ import { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import { ChatModal } from "./ChatModal";
 import Draggable from "react-draggable";
+import CloseIcon from "@mui/icons-material/Close";
+import RemoveIcon from "@mui/icons-material/Remove";
+import QuestionAnswerIcon from "@mui/icons-material/QuestionAnswer";
 
 export const ChatAvatarButton = () => {
   const [chatOpen, setChatOpen] = useState(false);
@@ -58,15 +61,23 @@ export const ChatAvatarButton = () => {
         >
           <ModalOverlay ref={draggableRef}>
             <ChatModalContainer>
-              <MinimizeButton
-                onClick={() => {
-                  minimizeChat();
-                  restorePosition();
-                }}
-              >
-                -
-              </MinimizeButton>
-              <CloseButton onClick={closeChat}>x</CloseButton>
+              <HeaderContainer>
+                <QuestionAnswerIcon style={{ color: "white" }} />
+                <h4 style={{ color: "white" }}>Chat with us</h4>
+                <ButtonContainer>
+                  <Button
+                    onClick={() => {
+                      minimizeChat();
+                      restorePosition();
+                    }}
+                  >
+                    <RemoveIcon />
+                  </Button>
+                  <Button onClick={closeChat}>
+                    <CloseIcon />
+                  </Button>
+                </ButtonContainer>
+              </HeaderContainer>
               <ChatModal />
             </ChatModalContainer>
           </ModalOverlay>
@@ -76,18 +87,32 @@ export const ChatAvatarButton = () => {
   );
 };
 
-const MinimizeButton = styled.button`
-  background-color: #fff;
-  color: #6f03fc;
+const HeaderContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  text-align: center;
+  margin-bottom: 10px;
+`;
+
+const ButtonContainer = styled.div``;
+
+const Button = styled.button`
   border: none;
-  padding: 8px;
+  background-color: #6f03fc;
+  color: white;
+  font-size: 16px;
   cursor: pointer;
-  border-radius: 4px;
-  margin-right: 5px;
-  transition: background-color 0.3s ease;
+  transition: all 0.3s ease;
 
   &:hover {
-    background-color: #f0f0f0;
+    background-color: #6c63ff;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+  }
+
+  &:active {
+    background-color: #5a52e0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   }
 `;
 
@@ -135,19 +160,4 @@ const ChatModalContainer = styled.div`
   border-radius: 8px;
   max-width: 400px;
   width: 100%;
-`;
-
-const CloseButton = styled.button`
-  background-color: #fff;
-  color: #6f03fc;
-  border: none;
-  padding: 8px;
-  cursor: pointer;
-  border-radius: 4px;
-  margin-bottom: 10px;
-  transition: background-color 0.3s ease;
-
-  &:hover {
-    background-color: #f0f0f0;
-  }
 `;

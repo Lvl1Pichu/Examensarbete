@@ -101,7 +101,7 @@ const FormGroup = styled.div`
 `;
 
 const SubmitButton = styled.button`
-  background-color: #48347c;
+  background-color: #6c63ff;
   color: #fff;
   padding: 10px 15px;
   border: none;
