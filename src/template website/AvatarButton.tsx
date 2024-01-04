@@ -1,35 +1,95 @@
+import { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
-import { useState } from "react";
 import { ChatModal } from "./ChatModal";
+import Draggable from "react-draggable";
 
 export const ChatAvatarButton = () => {
   const [chatOpen, setChatOpen] = useState(false);
+  const [position, setPosition] = useState({ x: 0, y: 0 });
+  const [minimized, setMinimized] = useState(false);
+  const draggableRef = useRef(null);
+
+  useEffect(() => {
+    localStorage.setItem("chatModalPosition", JSON.stringify(position));
+  }, [position]);
 
   const openChat = () => {
-    setChatOpen(true);
+    if (minimized) {
+      setChatOpen(true);
+      setPosition({ x: position.x, y: position.y });
+      setMinimized(false);
+    } else {
+      setPosition({ x: 0, y: 0 });
+      setChatOpen(true);
+    }
   };
 
   const closeChat = () => {
     setChatOpen(false);
   };
 
+  const minimizeChat = () => {
+    setMinimized(true);
+    setChatOpen(false);
+  };
+
+  const restorePosition = () => {
+    const savedPosition = localStorage.getItem("chatModalPosition");
+    if (savedPosition) {
+      setPosition(JSON.parse(savedPosition));
+    }
+  };
+
   return (
     <>
-      <AvatarButton onClick={openChat}>
-        <AvatarImage src="src\resources\ChatPicture.png" alt="User Avatar" />
-      </AvatarButton>
+      {!chatOpen && (
+        <AvatarButton onClick={openChat}>
+          <AvatarImage src="src\resources\ChatPicture.png" alt="User Avatar" />
+        </AvatarButton>
+      )}
 
       {chatOpen && (
-        <ModalOverlay>
-          <ChatModalContainer>
-            <CloseButton onClick={closeChat}>Close</CloseButton>
-            <ChatModal />
-          </ChatModalContainer>
-        </ModalOverlay>
+        <Draggable
+          defaultPosition={position}
+          nodeRef={draggableRef}
+          onStop={(_e, data) => {
+            setPosition({ x: data.x, y: data.y });
+          }}
+        >
+          <ModalOverlay ref={draggableRef}>
+            <ChatModalContainer>
+              <MinimizeButton
+                onClick={() => {
+                  minimizeChat();
+                  restorePosition();
+                }}
+              >
+                -
+              </MinimizeButton>
+              <CloseButton onClick={closeChat}>x</CloseButton>
+              <ChatModal />
+            </ChatModalContainer>
+          </ModalOverlay>
+        </Draggable>
       )}
     </>
   );
 };
+
+const MinimizeButton = styled.button`
+  background-color: #fff;
+  color: #6f03fc;
+  border: none;
+  padding: 8px;
+  cursor: pointer;
+  border-radius: 4px;
+  margin-right: 5px;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: #f0f0f0;
+  }
+`;
 
 const AvatarButton = styled.button`
   position: fixed;

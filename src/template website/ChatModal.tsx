@@ -73,9 +73,10 @@ export const ChatModal = () => {
             value={formData.problem}
             onChange={handleChange}
             required
+            style={{ width: "100%" }}
           />
         </FormGroup>
-        <SubmitButton type="submit">Submit</SubmitButton>
+        <SubmitButton type="submit">Start Chat</SubmitButton>
       </form>
     </ChatContainer>
   );
@@ -109,7 +110,7 @@ const SubmitButton = styled.button`
   transition: background-color 0.3s ease;
 
   &:hover {
-    background-color: #48347c;
+    background-color: #6f03fc;
   }
 `;
 
