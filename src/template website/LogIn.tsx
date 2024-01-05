@@ -10,13 +10,28 @@ import {
   Grid,
 } from "@mui/material";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
-  const handleLogin = () => {};
+  const handleLogin = () => {
+    const stringUser = localStorage.getItem("user");
+    let user;
+
+    if (!stringUser) {
+      return;
+    } else {
+      user = JSON.parse(stringUser);
+    }
+
+    if (user.email === email && user.password === password) {
+      console.log("Logged in!");
+      navigate("/");
+    }
+  };
 
   return (
     <>

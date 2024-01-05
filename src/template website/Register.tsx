@@ -9,16 +9,25 @@ import {
   Typography,
 } from "@mui/material";
 import { LockOutlined } from "@mui/icons-material";
-import { SetStateAction, useState } from "react";
-import { Link } from "react-router-dom";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 
 const Register = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
-  const handleRegister = async () => {
-    // Add your registration logic here
+  const handleRegister = () => {
+    const user = {
+      userName: name,
+      email: email,
+      password: password,
+    };
+
+    localStorage.setItem("user", JSON.stringify(user));
+    console.log("registered!");
+    navigate("/login");
   };
 
   return (
