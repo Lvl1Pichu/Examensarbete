@@ -4,6 +4,7 @@ import { CometChat } from "@cometchat/chat-sdk-javascript";
 type CometChatContextType = {
   loginUser: () => void;
   sendMessage: (groupId: string, text: string) => void;
+  createUser: () => void;
 };
 
 type CometChatProviderProps = {
@@ -45,6 +46,25 @@ export const CometChatProvider: React.FC<CometChatProviderProps> = ({
     }
   };
 
+  const createUser = () => {
+    const authKey: string = "64b7d20f19139473eb976616d751e447b3a8f516",
+      UID: string = "user12",
+      name: string = "Kevin";
+
+    const user = new CometChat.User(UID);
+
+    user.setName(name);
+
+    CometChat.createUser(user, authKey).then(
+      (user: CometChat.User) => {
+        console.log("user created", user);
+      },
+      (error: CometChat.CometChatException) => {
+        console.log("error", error);
+      }
+    );
+  };
+
   const sendMessage = async (groupId: string, text: string) => {
     try {
       const textMessage = new CometChat.TextMessage(
@@ -61,7 +81,7 @@ export const CometChatProvider: React.FC<CometChatProviderProps> = ({
   };
 
   return (
-    <CometChatContext.Provider value={{ loginUser, sendMessage }}>
+    <CometChatContext.Provider value={{ loginUser, sendMessage, createUser }}>
       {children}
     </CometChatContext.Provider>
   );
