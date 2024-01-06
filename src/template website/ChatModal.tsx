@@ -1,10 +1,13 @@
 import { TextField } from "@mui/material";
 import { ChangeEvent, FormEvent, useState } from "react";
 import styled from "styled-components";
+import { useCometChat } from "../CometChat/CometChatContext";
 
 // import { CometChat } from "@cometchat/chat-sdk-javascript";
 
 export const ChatModal = () => {
+  const cometChatContext = useCometChat();
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -20,21 +23,8 @@ export const ChatModal = () => {
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
-    console.log(formData);
-    // try {
-    //   const user = await CometChat.login();
-    //   const group = new CometChat.createGroup(group);
-
-    //   const textMessage = new CometChat.TextMessage(
-    //     formData.problem,
-    //     CometChat.MESSAGE_TYPE.TEXT,
-    //     CometChat.RECEIVER_TYPE.GROUP
-    //   );
-
-    //   await CometChat.sendMessage(textMessage);
-    // } catch (error) {
-    //   console.error("Error:", error);
-    // }
+    await cometChatContext.loginUser();
+    await cometChatContext.createGroup();
   };
 
   return (
