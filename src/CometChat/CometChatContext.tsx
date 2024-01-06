@@ -5,7 +5,7 @@ type CometChatContextType = {
   loginUser: () => void;
   sendMessage: (groupId: string, text: string) => void;
   createUser: () => void;
-  createGroup: () => Promise<string>;
+  createGroup: () => Promise<CometChat.Group>;
 };
 
 type CometChatProviderProps = {
@@ -66,7 +66,7 @@ export const CometChatProvider: React.FC<CometChatProviderProps> = ({
     try {
       const createdGroup = await CometChat.createGroup(group);
       console.log("Group created successfully:", createdGroup);
-      return GUID;
+      return createdGroup;
     } catch (error) {
       console.log("Group creation failed with exception:", error);
       throw error;
