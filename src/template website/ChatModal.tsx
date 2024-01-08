@@ -1,15 +1,29 @@
 import { TextField } from "@mui/material";
-import { ChangeEvent, FormEvent, useState } from "react";
+import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import styled from "styled-components";
-
-// import { CometChat } from "@cometchat/chat-sdk-javascript";
+import { useCometChat } from "../CometChat/CometChatContext";
+import { CometChatMessages } from "@cometchat/chat-uikit-react";
+import { CometChat, Group } from "@cometchat/chat-sdk-javascript";
 
 export const ChatModal = () => {
+  const cometChatContext = useCometChat();
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     problem: "",
   });
+
+  const [groupCreated, setGroupCreated] = useState(false);
+  const [ChattingWithGroup, setChattingWithGroup] = useState<
+    Group | undefined
+  >();
+
+  useEffect(() => {
+    CometChat.getGroup("GUID").then((group) => {
+      setChattingWithGroup(group);
+    });
+  }); // Track whether the group is created
 
   const handleChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -20,64 +34,64 @@ export const ChatModal = () => {
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
-    console.log(formData);
-    // try {
-    //   const user = await CometChat.login();
-    //   const group = new CometChat.createGroup(group);
 
-    //   const textMessage = new CometChat.TextMessage(
-    //     formData.problem,
-    //     CometChat.MESSAGE_TYPE.TEXT,
-    //     CometChat.RECEIVER_TYPE.GROUP
-    //   );
+    try {
+      await cometChatContext.loginUser();
 
-    //   await CometChat.sendMessage(textMessage);
-    // } catch (error) {
-    //   console.error("Error:", error);
-    // }
+      const createdGroup = await cometChatContext.createGroup();
+      if (createdGroup) {
+        setGroupCreated(true);
+      }
+    } catch (error) {
+      console.error("Error handling form submission:", error);
+    }
   };
 
   return (
     <ChatContainer>
-      <form onSubmit={handleSubmit}>
-        <FormGroup>
-          <TextField
-            label="Name"
-            variant="outlined"
-            id="name"
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
-            required
-          />
-        </FormGroup>
-        <FormGroup>
-          <TextField
-            label="Email"
-            variant="outlined"
-            id="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            required
-          />
-        </FormGroup>
-        <FormGroup>
-          <TextField
-            label="Describe the problem"
-            variant="outlined"
-            id="problem"
-            name="problem"
-            multiline
-            rows={4}
-            value={formData.problem}
-            onChange={handleChange}
-            required
-            style={{ width: "100%" }}
-          />
-        </FormGroup>
-        <SubmitButton type="submit">Start Chat</SubmitButton>
-      </form>
+      {groupCreated ? (
+        <CometChatMessages group={ChattingWithGroup} /> // Render MessagesDemo component if group is created
+      ) : (
+        <form onSubmit={handleSubmit}>
+          <FormGroup>
+            <TextField
+              label="Name"
+              variant="outlined"
+              id="name"
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+              required
+            />
+          </FormGroup>
+          <FormGroup>
+            <TextField
+              label="Email"
+              variant="outlined"
+              id="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              required
+            />
+          </FormGroup>
+          <FormGroup>
+            <TextField
+              label="Describe the problem"
+              variant="outlined"
+              id="problem"
+              name="problem"
+              multiline
+              rows={4}
+              value={formData.problem}
+              onChange={handleChange}
+              required
+              style={{ width: "100%" }}
+            />
+          </FormGroup>
+          <SubmitButton type="submit">Start Chat</SubmitButton>
+        </form>
+      )}
     </ChatContainer>
   );
 };

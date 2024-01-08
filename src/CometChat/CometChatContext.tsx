@@ -5,6 +5,7 @@ type CometChatContextType = {
   loginUser: () => void;
   sendMessage: (groupId: string, text: string) => void;
   createUser: () => void;
+  createGroup: () => Promise<CometChat.Group>;
 };
 
 type CometChatProviderProps = {
@@ -18,23 +19,9 @@ const CometChatContext = createContext<CometChatContextType | undefined>(
 export const CometChatProvider: React.FC<CometChatProviderProps> = ({
   children,
 }) => {
-  const generateUniqueId = () => {
-    const characters =
-      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-    const length = 16;
-
-    let uniqueId = "";
-    for (let i = 0; i < length; i++) {
-      const randomIndex = Math.floor(Math.random() * characters.length);
-      uniqueId += characters.charAt(randomIndex);
-    }
-
-    return uniqueId;
-  };
-
   const loginUser = async () => {
     try {
-      const userId = generateUniqueId();
+      const userId = "user12";
       const user = await CometChat.login(
         userId,
         "64b7d20f19139473eb976616d751e447b3a8f516"
@@ -65,6 +52,27 @@ export const CometChatProvider: React.FC<CometChatProviderProps> = ({
     );
   };
 
+  const createGroup = async () => {
+    const GUID: string = "GUID";
+    const groupName: string = "Hello Group!";
+    const groupType: string = CometChat.GROUP_TYPE.PRIVATE;
+
+    const group: CometChat.Group = new CometChat.Group(
+      GUID,
+      groupName,
+      groupType
+    );
+
+    try {
+      const createdGroup = await CometChat.createGroup(group);
+      console.log("Group created successfully:", createdGroup);
+      return createdGroup;
+    } catch (error) {
+      console.log("Group creation failed with exception:", error);
+      throw error;
+    }
+  };
+
   const sendMessage = async (groupId: string, text: string) => {
     try {
       const textMessage = new CometChat.TextMessage(
@@ -81,7 +89,9 @@ export const CometChatProvider: React.FC<CometChatProviderProps> = ({
   };
 
   return (
-    <CometChatContext.Provider value={{ loginUser, sendMessage, createUser }}>
+    <CometChatContext.Provider
+      value={{ loginUser, sendMessage, createUser, createGroup }}
+    >
       {children}
     </CometChatContext.Provider>
   );
