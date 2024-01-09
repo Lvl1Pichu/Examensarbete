@@ -10,13 +10,14 @@ import {
 
 type CometChatContextType = {
   loginUser: (UID: string) => Promise<User>;
-  createUser: (name: string, UID: string) => Promise<void>;
+  createOrLoginUser: (name: string, UID: string) => Promise<void>;
   createGroup: (GUID: string) => Promise<CometChat.Group>;
   formatIDForCometChat: (stringToBeFormatted: string) => string;
   sendMessage: (
     groupId: string,
     text: string
   ) => Promise<TextMessage | MediaMessage | CustomMessage | BaseMessage>;
+  logout: () => Promise<void>;
 };
 
 type CometChatProviderProps = {
@@ -31,20 +32,30 @@ export const CometChatProvider: React.FC<CometChatProviderProps> = ({
   children,
 }) => {
   const loginUser = async (UID: string) => {
+    const authKey = "64b7d20f19139473eb976616d751e447b3a8f516";
     try {
-      const authKey = "64b7d20f19139473eb976616d751e447b3a8f516";
-      const user = await CometChat.login(UID, authKey);
-      console.log("user logged in");
+      const user = await CometChat.getLoggedInUser();
+      if (user === null) {
+        throw new Error();
+      }
       return user;
-    } catch (error) {
-      console.error("Error logging in:", error);
-      throw error;
+    } catch {
+      try {
+        console.log("Attempting to log in");
+        const user = await CometChat.login(UID, authKey);
+        console.log("user logged in");
+        return user;
+      } catch (error) {
+        console.error("Error logging in:", error);
+        throw error;
+      }
     }
   };
 
-  const createUser = async (name: string, UID: string) => {
+  const createOrLoginUser = async (name: string, UID: string) => {
     try {
       await loginUser(UID);
+      console.log("User has been logged in");
     } catch {
       const authKey: string = "64b7d20f19139473eb976616d751e447b3a8f516";
       const user = new CometChat.User(UID);
@@ -60,7 +71,7 @@ export const CometChatProvider: React.FC<CometChatProviderProps> = ({
     }
   };
   const createGroup = async (GUID: string) => {
-    const groupName: string = "Hello Group!";
+    const groupName: string = "Support ticket #21387";
     const groupType: string = CometChat.GROUP_TYPE.PUBLIC;
 
     const group: CometChat.Group = new CometChat.Group(
@@ -99,14 +110,19 @@ export const CometChatProvider: React.FC<CometChatProviderProps> = ({
     }
   };
 
+  const logout = async () => {
+    await CometChat.logout();
+  };
+
   return (
     <CometChatContext.Provider
       value={{
         loginUser,
-        createUser,
+        createOrLoginUser,
         createGroup,
         formatIDForCometChat,
         sendMessage,
+        logout,
       }}
     >
       {children}

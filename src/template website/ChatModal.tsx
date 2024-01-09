@@ -33,7 +33,7 @@ export const ChatModal = () => {
 
     try {
       const ID = cometChatContext.formatIDForCometChat(formData.email);
-      await cometChatContext.createUser(formData.name, ID);
+      await cometChatContext.createOrLoginUser(formData.name, ID);
       try {
         const fetchedGroup = await CometChat.getGroup(ID);
         setChattingWithGroup(fetchedGroup);
