@@ -54,6 +54,7 @@ export const ChatAvatarButton = () => {
       {chatOpen && (
         <Draggable
           defaultPosition={position}
+          handle=".handle"
           nodeRef={draggableRef}
           onStop={(_e, data) => {
             setPosition({ x: data.x, y: data.y });
@@ -61,7 +62,7 @@ export const ChatAvatarButton = () => {
         >
           <ModalOverlay ref={draggableRef}>
             <ChatModalContainer>
-              <HeaderContainer>
+              <HeaderContainer className="handle">
                 <QuestionAnswerIcon style={{ color: "white" }} />
                 <h4 style={{ color: "white" }}>Chat with us</h4>
                 <ButtonContainer>

@@ -1,11 +1,22 @@
 import { ReactNode, createContext, useContext } from "react";
-import { CometChat } from "@cometchat/chat-sdk-javascript";
+import {
+  BaseMessage,
+  CometChat,
+  CustomMessage,
+  MediaMessage,
+  TextMessage,
+  User,
+} from "@cometchat/chat-sdk-javascript";
 
 type CometChatContextType = {
-  loginUser: () => void;
-  sendMessage: (groupId: string, text: string) => void;
-  createUser: () => void;
-  createGroup: () => Promise<CometChat.Group>;
+  loginUser: (UID: string) => Promise<User>;
+  createUser: (name: string, UID: string) => Promise<void>;
+  createGroup: (GUID: string) => Promise<CometChat.Group>;
+  formatIDForCometChat: (stringToBeFormatted: string) => string;
+  sendMessage: (
+    groupId: string,
+    text: string
+  ) => Promise<TextMessage | MediaMessage | CustomMessage | BaseMessage>;
 };
 
 type CometChatProviderProps = {
@@ -19,13 +30,11 @@ const CometChatContext = createContext<CometChatContextType | undefined>(
 export const CometChatProvider: React.FC<CometChatProviderProps> = ({
   children,
 }) => {
-  const loginUser = async () => {
+  const loginUser = async (UID: string) => {
     try {
-      const userId = "user12";
-      const user = await CometChat.login(
-        userId,
-        "64b7d20f19139473eb976616d751e447b3a8f516"
-      );
+      const authKey = "64b7d20f19139473eb976616d751e447b3a8f516";
+      const user = await CometChat.login(UID, authKey);
+      console.log("user logged in");
       return user;
     } catch (error) {
       console.error("Error logging in:", error);
@@ -33,29 +42,26 @@ export const CometChatProvider: React.FC<CometChatProviderProps> = ({
     }
   };
 
-  const createUser = () => {
-    const authKey: string = "64b7d20f19139473eb976616d751e447b3a8f516",
-      UID: string = "user12",
-      name: string = "Kevin";
+  const createUser = async (name: string, UID: string) => {
+    try {
+      await loginUser(UID);
+    } catch {
+      const authKey: string = "64b7d20f19139473eb976616d751e447b3a8f516";
+      const user = new CometChat.User(UID);
+      user.setName(name);
 
-    const user = new CometChat.User(UID);
-
-    user.setName(name);
-
-    CometChat.createUser(user, authKey).then(
-      (user: CometChat.User) => {
-        console.log("user created", user);
-      },
-      (error: CometChat.CometChatException) => {
-        console.log("error", error);
+      try {
+        await CometChat.createUser(user, authKey);
+        await loginUser(UID);
+      } catch (error) {
+        console.log("User creation failed with exception:", error);
+        throw error;
       }
-    );
+    }
   };
-
-  const createGroup = async () => {
-    const GUID: string = "GUID";
+  const createGroup = async (GUID: string) => {
     const groupName: string = "Hello Group!";
-    const groupType: string = CometChat.GROUP_TYPE.PRIVATE;
+    const groupType: string = CometChat.GROUP_TYPE.PUBLIC;
 
     const group: CometChat.Group = new CometChat.Group(
       GUID,
@@ -71,6 +77,11 @@ export const CometChatProvider: React.FC<CometChatProviderProps> = ({
       console.log("Group creation failed with exception:", error);
       throw error;
     }
+  };
+
+  const formatIDForCometChat = (stringToBeFormatted: string) => {
+    const formattedString = stringToBeFormatted.replace(/@|\./g, "_");
+    return formattedString;
   };
 
   const sendMessage = async (groupId: string, text: string) => {
@@ -90,7 +101,13 @@ export const CometChatProvider: React.FC<CometChatProviderProps> = ({
 
   return (
     <CometChatContext.Provider
-      value={{ loginUser, sendMessage, createUser, createGroup }}
+      value={{
+        loginUser,
+        createUser,
+        createGroup,
+        formatIDForCometChat,
+        sendMessage,
+      }}
     >
       {children}
     </CometChatContext.Provider>

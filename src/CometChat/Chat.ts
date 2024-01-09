@@ -21,21 +21,3 @@ CometChat.init(appID, appSetting).then(
     console.log("Initialization failed with error:", error);
   }
 );
-
-CometChat.getLoggedinUser().then(
-  (user: CometChat.User | null) => {
-    if (!user) {
-      CometChat.login("user12", COMETCHAT_CONSTANTS.AUTH_KEY).then(
-        (loggedInUser: CometChat.User) => {
-          console.log("Login Successful:", { loggedInUser });
-        },
-        (error: CometChat.CometChatException) => {
-          console.log("Login failed with exception:", { error });
-        }
-      );
-    }
-  },
-  (error: CometChat.CometChatException) => {
-    console.log("Some Error Occurred", { error });
-  }
-);
