@@ -100,7 +100,7 @@ export const ChatModal = () => {
 };
 
 const MessagesContainer = styled.div`
-  height: 700px;
+  height: 400px;
 `;
 
 const ChatContainer = styled.div`
