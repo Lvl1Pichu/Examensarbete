@@ -19,11 +19,7 @@ export const ChatModal = () => {
     Group | undefined
   >();
 
-  useEffect(() => {
-    CometChat.getGroup("GUID").then((group) => {
-      setChattingWithGroup(group);
-    });
-  }); // Track whether the group is created
+  useEffect(() => {});
 
   const handleChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -36,10 +32,15 @@ export const ChatModal = () => {
     e.preventDefault();
 
     try {
-      await cometChatContext.loginUser();
-
-      const createdGroup = await cometChatContext.createGroup();
-      if (createdGroup) {
+      const ID = cometChatContext.formatIDForCometChat(formData.email);
+      await cometChatContext.createOrLoginUser(formData.name, ID);
+      try {
+        const fetchedGroup = await CometChat.getGroup(ID);
+        setChattingWithGroup(fetchedGroup);
+        setGroupCreated(true);
+      } catch {
+        const createdGroup = await cometChatContext.createGroup(ID);
+        setChattingWithGroup(createdGroup);
         setGroupCreated(true);
       }
     } catch (error) {
@@ -50,7 +51,9 @@ export const ChatModal = () => {
   return (
     <ChatContainer>
       {groupCreated ? (
-        <CometChatMessages group={ChattingWithGroup} /> // Render MessagesDemo component if group is created
+        <MessagesContainer>
+          <CometChatMessages group={ChattingWithGroup} />
+        </MessagesContainer>
       ) : (
         <form onSubmit={handleSubmit}>
           <FormGroup>
@@ -95,6 +98,10 @@ export const ChatModal = () => {
     </ChatContainer>
   );
 };
+
+const MessagesContainer = styled.div`
+  height: 400px;
+`;
 
 const ChatContainer = styled.div`
   background-color: #fff;

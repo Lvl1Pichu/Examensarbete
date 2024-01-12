@@ -5,12 +5,14 @@ import Draggable from "react-draggable";
 import CloseIcon from "@mui/icons-material/Close";
 import RemoveIcon from "@mui/icons-material/Remove";
 import QuestionAnswerIcon from "@mui/icons-material/QuestionAnswer";
+import { useCometChat } from "../CometChat/CometChatContext";
 
 export const ChatAvatarButton = () => {
   const [chatOpen, setChatOpen] = useState(false);
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [minimized, setMinimized] = useState(false);
   const draggableRef = useRef(null);
+  const cometChatContext = useCometChat();
 
   useEffect(() => {
     localStorage.setItem("chatModalPosition", JSON.stringify(position));
@@ -29,6 +31,7 @@ export const ChatAvatarButton = () => {
 
   const closeChat = () => {
     setChatOpen(false);
+    cometChatContext.logout();
   };
 
   const minimizeChat = () => {
@@ -54,6 +57,7 @@ export const ChatAvatarButton = () => {
       {chatOpen && (
         <Draggable
           defaultPosition={position}
+          handle=".handle"
           nodeRef={draggableRef}
           onStop={(_e, data) => {
             setPosition({ x: data.x, y: data.y });
@@ -61,7 +65,7 @@ export const ChatAvatarButton = () => {
         >
           <ModalOverlay ref={draggableRef}>
             <ChatModalContainer>
-              <HeaderContainer>
+              <HeaderContainer className="handle">
                 <QuestionAnswerIcon style={{ color: "white" }} />
                 <h4 style={{ color: "white" }}>Chat with us</h4>
                 <ButtonContainer>
