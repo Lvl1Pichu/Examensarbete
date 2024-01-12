@@ -17,9 +17,9 @@ type SupportContextProviderProps = {
 
 const SupportContext = createContext<SupportContextType | undefined>(undefined);
 
-export const SupportContextProviderType: React.FC<
-  SupportContextProviderProps
-> = ({ children }) => {
+export const SupportContextProvider: React.FC<SupportContextProviderProps> = ({
+  children,
+}) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   const supportQueue: string[] = [];

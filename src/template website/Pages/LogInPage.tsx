@@ -11,10 +11,13 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useSupportContext } from "../../Support Engine/MessageContext";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const { setIsAuthenticated } = useSupportContext();
+
   const navigate = useNavigate();
 
   const handleLogin = async () => {
@@ -31,6 +34,7 @@ const Login = () => {
 
       if (response.status === 200) {
         console.log("Logged in!");
+        setIsAuthenticated(true);
         navigate("/");
       } else {
         console.error(data.message);
