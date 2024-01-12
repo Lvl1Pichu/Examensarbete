@@ -1,5 +1,5 @@
 /* eslint-disable react-refresh/only-export-components */
-import { ReactNode, createContext, useContext } from "react";
+import { ReactNode, createContext, useContext, useState } from "react";
 import { CometChat } from "@cometchat/chat-sdk-javascript";
 
 type SupportContextType = {
@@ -7,6 +7,8 @@ type SupportContextType = {
   getFirstInLineChat: () => string | null;
   getsupportQueueLength: () => number;
   connectSupportAgentToChat: () => void;
+  isAuthenticated: boolean;
+  setIsAuthenticated: (value: boolean) => void;
 };
 
 type SupportContextProviderProps = {
@@ -18,6 +20,8 @@ const SupportContext = createContext<SupportContextType | undefined>(undefined);
 export const SupportContextProviderType: React.FC<
   SupportContextProviderProps
 > = ({ children }) => {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
   const supportQueue: string[] = [];
 
   const saveGUIDToArray = (GUID: string) => {
@@ -60,6 +64,8 @@ export const SupportContextProviderType: React.FC<
         getFirstInLineChat,
         getsupportQueueLength,
         connectSupportAgentToChat,
+        isAuthenticated,
+        setIsAuthenticated,
       }}
     >
       {children}

@@ -4,8 +4,7 @@ import App from "./App.tsx";
 import "./index.css";
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import { HomePage } from "./template website/Pages/HomePage.tsx";
-import Register from "./template website/Register.tsx";
-import Login from "./template website/LogIn.tsx";
+import Login from "./template website/Pages/LogInPage.tsx";
 import { CometChatProvider } from "./CometChat/CometChatContext.tsx";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
@@ -25,7 +24,6 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
             }
           />
           <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
         </Routes>
       </Router>
     </CometChatProvider>
