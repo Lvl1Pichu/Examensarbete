@@ -1,14 +1,21 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
+import { useSupportContext } from "../Support Engine/MessageContext";
 
 const Header: React.FC = () => {
   const [isMenuOpen, setMenuOpen] = useState(false);
+  const { isAuthenticated, setIsAuthenticated } = useSupportContext();
 
   const navigate = useNavigate();
 
-  const navigateToLogin = () => {
-    navigate("/login");
+  const handleLogout = async () => {
+    try {
+      await fetch("http://localhost:3001/logout", { method: "POST" });
+      setIsAuthenticated(false);
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
   };
 
   return (
@@ -24,7 +31,13 @@ const Header: React.FC = () => {
           <NavLink href="#">Features</NavLink>
           <NavLink href="#">Testimonials</NavLink>
           <NavLink href="#">Pricing</NavLink>
-          <NavLink onClick={navigateToLogin}>Log in</NavLink>
+          {isAuthenticated ? (
+            <NavLink onClick={handleLogout}>Log out</NavLink>
+          ) : (
+            <NavLink onClick={() => navigate("/login")}>Log in</NavLink>
+          )}
+          {isAuthenticated && <NavLink href="/SupportPage">Support</NavLink>}
+
           <ContactLink href="#">Contact Sales</ContactLink>
         </Nav>
         <HamburgerIcon onClick={() => setMenuOpen(!isMenuOpen)}>

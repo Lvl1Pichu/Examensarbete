@@ -1,0 +1,23 @@
+{
+  "name": "backend-examensarbete",
+  "version": "1.0.0",
+  "description": "Backend för mitt examensarbete",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Lvl1Pichu/Examensarbete.git"
+  },
+  "author": "Linus Hammarberg",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Lvl1Pichu/Examensarbete/issues"
+  },
+  "homepage": "https://github.com/Lvl1Pichu/Examensarbete#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express-session": "^1.17.3"
+  }
+}

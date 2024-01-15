@@ -11,25 +11,36 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useSupportContext } from "../../Support Engine/MessageContext";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const { setIsAuthenticated } = useSupportContext();
+
   const navigate = useNavigate();
 
-  const handleLogin = () => {
-    const stringUser = localStorage.getItem("user");
-    let user;
+  const handleLogin = async () => {
+    try {
+      const response = await fetch("http://localhost:3001/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
 
-    if (!stringUser) {
-      return;
-    } else {
-      user = JSON.parse(stringUser);
-    }
+      const data = await response.json();
 
-    if (user.email === email && user.password === password) {
-      console.log("Logged in!");
-      navigate("/");
+      if (response.status === 200) {
+        console.log("Logged in!");
+        setIsAuthenticated(true);
+        navigate("/");
+      } else {
+        console.error(data.message);
+      }
+    } catch (error) {
+      console.error("Login request failed", error);
     }
   };
 
