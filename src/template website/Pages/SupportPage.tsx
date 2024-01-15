@@ -3,6 +3,7 @@ import { Button } from "@mui/material";
 import React from "react";
 import Draggable from "react-draggable";
 import { styled } from "styled-components";
+import { CustomerInformation } from "../CustomerInformation";
 
 const SupportPageContainer = styled.div`
   background-color: #f0f0f7;
@@ -20,14 +21,14 @@ const SupportEngineContainer = styled.div`
   flex-direction: column; // Changed to column
 `;
 
-const ButtonContainer = styled.div`
+const HeaderButtonContainer = styled.div`
   border: 1px solid black;
   width: 100%;
   padding: 10px; // Add padding for visual comfort
   text-align: center; // Center the content if needed
 `;
 
-const CustomerInformation = styled.div`
+const CustomerInformationContainer = styled.div`
   flex: 1;
   border: 1px solid black;
   width: 100%;
@@ -56,16 +57,16 @@ export const SupportPage: React.FC = () => {
         <Draggable>
           <SupportEngineContainer>
             {/* Place the ButtonContainer on top */}
-            <ButtonContainer>
+            <HeaderButtonContainer>
               <Button>Start</Button>
               <Button>End Chat</Button>
               <Button>Pause</Button>
               <TimeStoodInCurrentStatusContainer></TimeStoodInCurrentStatusContainer>
-            </ButtonContainer>
+            </HeaderButtonContainer>
             <InformationAndChatContainer>
-              <CustomerInformation>
-                {/* Customer Information content goes here */}
-              </CustomerInformation>
+              <CustomerInformationContainer>
+                <CustomerInformation groupId={"Ble"}></CustomerInformation>
+              </CustomerInformationContainer>
               <ChatWindow>
                 <CometChatMessages />
               </ChatWindow>
