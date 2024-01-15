@@ -21,7 +21,7 @@ const Header: React.FC = () => {
   return (
     <HeaderContainer>
       <HeaderInnerContainer>
-        <LogoLink href="#">
+        <LogoLink href="/">
           <LogoImage
             src="https://cdn.dorik.com/5e373b6c43a72a001f56dbf6/images/dPay_pjbcb488.svg"
             alt="dPay Logo"
@@ -36,7 +36,7 @@ const Header: React.FC = () => {
           ) : (
             <NavLink onClick={() => navigate("/login")}>Log in</NavLink>
           )}
-          {isAuthenticated && <NavLink href="/SupportPage">Support</NavLink>}
+          {isAuthenticated && <NavLink href="/supportPage">Support</NavLink>}
 
           <ContactLink href="#">Contact Sales</ContactLink>
         </Nav>

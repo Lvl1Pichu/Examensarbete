@@ -20,8 +20,10 @@ const SupportContext = createContext<SupportContextType | undefined>(undefined);
 export const SupportContextProvider: React.FC<SupportContextProviderProps> = ({
   children,
 }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-
+  const [isAuthenticated, setIsAuthenticated] = useState(() => {
+    const isAuth = localStorage.getItem("isAuthenticated");
+    return isAuth === "true";
+  });
   const supportQueue: string[] = [];
 
   const saveGUIDToArray = (GUID: string) => {
@@ -47,8 +49,8 @@ export const SupportContextProvider: React.FC<SupportContextProviderProps> = ({
   const connectSupportAgentToChat = async () => {
     try {
       const GUID = getFirstInLineChat();
-      await CometChat.joinGroup(GUID, CometChat.GroupType.Public);
       if (GUID) {
+        await CometChat.joinGroup(GUID, CometChat.GroupType.Public);
         const fetchedGroup = await CometChat.getGroup(GUID);
         return fetchedGroup;
       }

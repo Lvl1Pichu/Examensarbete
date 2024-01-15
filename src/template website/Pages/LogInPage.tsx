@@ -35,6 +35,7 @@ const Login = () => {
       if (response.status === 200) {
         console.log("Logged in!");
         setIsAuthenticated(true);
+        localStorage.setItem("isAuthenticated", "true");
         navigate("/");
       } else {
         console.error(data.message);
