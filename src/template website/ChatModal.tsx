@@ -1,5 +1,5 @@
 import { TextField } from "@mui/material";
-import { ChangeEvent, FormEvent, useEffect, useState } from "react";
+import { ChangeEvent, FormEvent, useState } from "react";
 import styled from "styled-components";
 import { useCometChat } from "../CometChat/CometChatContext";
 import { CometChatMessages } from "@cometchat/chat-uikit-react";
@@ -18,8 +18,6 @@ export const ChatModal = () => {
   const [ChattingWithGroup, setChattingWithGroup] = useState<
     Group | undefined
   >();
-
-  useEffect(() => {});
 
   const handleChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>

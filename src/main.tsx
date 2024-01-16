@@ -27,8 +27,8 @@ const PrivateRoute: React.FC<PrivateRouteProps> = ({ children }) => {
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <CometChatProvider>
-      <SupportContextProvider>
+    <SupportContextProvider>
+      <CometChatProvider>
         <Router>
           <Routes>
             <Route
@@ -53,7 +53,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
             />
           </Routes>
         </Router>
-      </SupportContextProvider>
-    </CometChatProvider>
+      </CometChatProvider>
+    </SupportContextProvider>
   </React.StrictMode>
 );

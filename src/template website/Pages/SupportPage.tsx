@@ -1,9 +1,10 @@
 import { CometChatMessages } from "@cometchat/chat-uikit-react";
 import { Button } from "@mui/material";
-import React from "react";
-import Draggable from "react-draggable";
+import React, { useState } from "react";
 import { styled } from "styled-components";
 import { CustomerInformation } from "../CustomerInformation";
+import { useSupportContext } from "../../Support Engine/MessageContext";
+import { Group } from "@cometchat/chat-sdk-javascript";
 
 const SupportPageContainer = styled.div`
   background-color: #f0f0f7;
@@ -51,28 +52,36 @@ const InformationAndChatContainer = styled.div`
 const TimeStoodInCurrentStatusContainer = styled.div``;
 
 export const SupportPage: React.FC = () => {
+  const [ChattingWithGroup, setChattingWithGroup] = useState<
+    Group | undefined
+  >();
+  const SupportContext = useSupportContext();
+
+  const handleStartChat = async () => {
+    const fetchedGroup = await SupportContext.connectSupportAgentToChat();
+    setChattingWithGroup(fetchedGroup);
+  };
+
   return (
     <>
       <SupportPageContainer>
-        <Draggable>
-          <SupportEngineContainer>
-            {/* Place the ButtonContainer on top */}
-            <HeaderButtonContainer>
-              <Button>Start</Button>
-              <Button>End Chat</Button>
-              <Button>Pause</Button>
-              <TimeStoodInCurrentStatusContainer></TimeStoodInCurrentStatusContainer>
-            </HeaderButtonContainer>
-            <InformationAndChatContainer>
-              <CustomerInformationContainer>
-                <CustomerInformation groupId={"Ble"}></CustomerInformation>
-              </CustomerInformationContainer>
-              <ChatWindow>
-                <CometChatMessages />
-              </ChatWindow>
-            </InformationAndChatContainer>
-          </SupportEngineContainer>
-        </Draggable>
+        <SupportEngineContainer>
+          {/* Place the ButtonContainer on top */}
+          <HeaderButtonContainer>
+            <Button onClick={handleStartChat}>Start</Button>
+            <Button>End Chat</Button>
+            <Button>Pause</Button>
+            <TimeStoodInCurrentStatusContainer></TimeStoodInCurrentStatusContainer>
+          </HeaderButtonContainer>
+          <InformationAndChatContainer>
+            <CustomerInformationContainer>
+              <CustomerInformation groupId={""}></CustomerInformation>
+            </CustomerInformationContainer>
+            <ChatWindow>
+              <CometChatMessages group={ChattingWithGroup} />
+            </ChatWindow>
+          </InformationAndChatContainer>
+        </SupportEngineContainer>
       </SupportPageContainer>
     </>
   );

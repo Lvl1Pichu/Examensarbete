@@ -83,6 +83,10 @@ export const CometChatProvider: React.FC<CometChatProviderProps> = ({
     try {
       const createdGroup = await CometChat.createGroup(group);
       console.log("Group created successfully:", createdGroup);
+      fetch("http://localhost:3001/queue", {
+        body: GUID,
+        method: "POST",
+      });
       return createdGroup;
     } catch (error) {
       console.log("Group creation failed with exception:", error);

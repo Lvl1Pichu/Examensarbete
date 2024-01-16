@@ -8,6 +8,8 @@ const bodyParser = require("body-parser");
 const app = express();
 const port = 3001;
 
+const supportQueue = [];
+
 app.use(bodyParser.json());
 
 app.use(
@@ -31,13 +33,21 @@ const SupportAgent = {
   password: "support123",
 };
 
-const isAuthenticated = (req, res, next) => {
-  if (req.session.isAuthenticated) {
-    next();
+app.post("/queue", (req, res) => {
+  const { GUID } = req.body;
+  supportQueue.push(GUID);
+  res.status(200).json({ message: "User has been added to Queue" });
+});
+
+app.get("/getFromQueue", (req, res) => {
+  if (supportQueue.length > 0) {
+    console.log("queue not empty");
+    res.send(supportQueue[0]);
+    res.status(200);
   } else {
-    res.status(401).send("Not authenticated");
+    res.status(401);
   }
-};
+});
 
 // Login route
 app.post("/login", (req, res) => {
@@ -49,14 +59,6 @@ app.post("/login", (req, res) => {
   } else {
     req.session.isAuthenticated = false;
     res.status(401).json({ message: "Invalid credentials" });
-  }
-});
-
-app.get("/protected-route", isAuthenticated, (req, res) => {
-  if (req.session.userRole === "supportAgent") {
-    res.send("Welcome, Support Agent!");
-  } else {
-    res.send("Access Denied");
   }
 });
 
