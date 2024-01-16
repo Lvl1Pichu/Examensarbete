@@ -34,18 +34,19 @@ const SupportAgent = {
 };
 
 app.post("/queue", (req, res) => {
-  const { GUID } = req.body;
+  const GUID = req.body;
+  console.log(req.body, "Request body");
   supportQueue.push(GUID);
   res.status(200).json({ message: "User has been added to Queue" });
 });
 
 app.get("/getFromQueue", (req, res) => {
   if (supportQueue.length > 0) {
-    console.log("queue not empty");
-    res.send(supportQueue[0]);
+    console.log(supportQueue);
     res.status(200);
+    res.send(supportQueue[0]);
   } else {
-    res.status(401);
+    res.status(401).send();
   }
 });
 

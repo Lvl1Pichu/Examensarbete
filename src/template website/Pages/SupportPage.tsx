@@ -16,17 +16,17 @@ const SupportPageContainer = styled.div`
 
 const SupportEngineContainer = styled.div`
   border: 1px solid black;
-  width: 80vh; // You might want to adjust the width as well
+  width: 80vh;
   height: 500px;
   display: flex;
-  flex-direction: column; // Changed to column
+  flex-direction: column;
 `;
 
 const HeaderButtonContainer = styled.div`
   border: 1px solid black;
   width: 100%;
-  padding: 10px; // Add padding for visual comfort
-  text-align: center; // Center the content if needed
+  padding: 10px;
+  text-align: center;
 `;
 
 const CustomerInformationContainer = styled.div`
@@ -66,7 +66,6 @@ export const SupportPage: React.FC = () => {
     <>
       <SupportPageContainer>
         <SupportEngineContainer>
-          {/* Place the ButtonContainer on top */}
           <HeaderButtonContainer>
             <Button onClick={handleStartChat}>Start</Button>
             <Button>End Chat</Button>
