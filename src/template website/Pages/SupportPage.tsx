@@ -1,4 +1,8 @@
-import { CometChatMessages } from "@cometchat/chat-uikit-react";
+import {
+  CometChatMessages,
+  MessageComposerConfiguration,
+  MessageHeaderConfiguration,
+} from "@cometchat/chat-uikit-react";
 import { Button } from "@mui/material";
 import React, { useState } from "react";
 import { styled } from "styled-components";
@@ -56,8 +60,6 @@ export const SupportPage: React.FC = () => {
     Group | undefined
   >();
 
-  // CHECK WITH COMETCHAT
-
   const SupportContext = useSupportContext();
 
   const handleStartChat = async () => {
@@ -70,7 +72,6 @@ export const SupportPage: React.FC = () => {
 
       const groupList = await groupsRequest.fetchNext();
       console.log("Groups list fetched successfully", groupList);
-
       if (groupList && groupList.length > 0) {
         setChattingWithGroup(groupList[0]);
         return;
@@ -83,6 +84,21 @@ export const SupportPage: React.FC = () => {
       console.error("An error occurred during the start chat process", error);
     }
   };
+
+  const messageComposerConfig = new MessageComposerConfiguration({
+    attachmentIconURL: "",
+    emojiIconURL: "",
+    secondaryButtonView: null,
+    auxilaryButtonView: null,
+    hideLiveReaction: true,
+    hideVoiceRecording: true,
+    AIIconURL: "",
+  });
+
+  const messageHeaderConfig = new MessageHeaderConfiguration({
+    subtitleView: false,
+    menu: () => null,
+  });
 
   return (
     <>
@@ -99,7 +115,11 @@ export const SupportPage: React.FC = () => {
               <CustomerInformation groupId={""}></CustomerInformation>
             </CustomerInformationContainer>
             <ChatWindow>
-              <CometChatMessages group={ChattingWithGroup} />
+              <CometChatMessages
+                group={ChattingWithGroup}
+                messageComposerConfiguration={messageComposerConfig}
+                messageHeaderConfiguration={messageHeaderConfig}
+              />{" "}
             </ChatWindow>
           </InformationAndChatContainer>
         </SupportEngineContainer>

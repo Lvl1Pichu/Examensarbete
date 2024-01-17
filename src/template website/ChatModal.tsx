@@ -2,7 +2,11 @@ import { TextField } from "@mui/material";
 import { ChangeEvent, FormEvent, useState } from "react";
 import styled from "styled-components";
 import { useCometChat } from "../CometChat/CometChatContext";
-import { CometChatMessages } from "@cometchat/chat-uikit-react";
+import {
+  CometChatMessages,
+  MessageComposerConfiguration,
+  MessageHeaderConfiguration,
+} from "@cometchat/chat-uikit-react";
 import { CometChat, Group } from "@cometchat/chat-sdk-javascript";
 
 export const ChatModal = () => {
@@ -46,11 +50,30 @@ export const ChatModal = () => {
     }
   };
 
+  const messageComposerConfig = new MessageComposerConfiguration({
+    attachmentIconURL: "",
+    emojiIconURL: "",
+    secondaryButtonView: null,
+    auxilaryButtonView: null,
+    hideLiveReaction: true,
+    hideVoiceRecording: true,
+    AIIconURL: "",
+  });
+
+  const messageHeaderConfig = new MessageHeaderConfiguration({
+    subtitleView: false,
+    menu: () => null,
+  });
+
   return (
     <ChatContainer>
       {groupCreated ? (
         <MessagesContainer>
-          <CometChatMessages group={ChattingWithGroup} />
+          <CometChatMessages
+            group={ChattingWithGroup}
+            messageComposerConfiguration={messageComposerConfig}
+            messageHeaderConfiguration={messageHeaderConfig}
+          />
         </MessagesContainer>
       ) : (
         <form onSubmit={handleSubmit}>
