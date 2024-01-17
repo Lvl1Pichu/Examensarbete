@@ -11,6 +11,7 @@ const port = 3001;
 const supportQueue = [];
 
 app.use(bodyParser.json());
+app.use(bodyParser.text());
 
 app.use(
   cors({
@@ -29,7 +30,7 @@ app.use(
 );
 
 const SupportAgent = {
-  email: "Linus.hammarberg@gmail.com",
+  email: "Linus.supportAgent@gmail.com",
   password: "support123",
 };
 

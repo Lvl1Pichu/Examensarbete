@@ -24,11 +24,13 @@ export const SupportContextProvider: React.FC<SupportContextProviderProps> = ({
 
   const connectSupportAgentToChat = async () => {
     try {
-      const GUID = await fetch("http://localhost:3001/getFromQueue", {
+      const response = await fetch("http://localhost:3001/getFromQueue", {
         headers: {
           "Content-Type": "text/html",
         },
       });
+
+      const GUID = await response.text();
 
       if (!GUID) {
         throw new Error("No GUID available for connecting to chat");
