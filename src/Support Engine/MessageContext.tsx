@@ -27,22 +27,25 @@ export const SupportContextProvider: React.FC<SupportContextProviderProps> = ({
   const connectSupportAgentToChat = async () => {
     try {
       const response = await fetch("http://localhost:3001/getFromQueue", {
-        headers: {
-          "Content-Type": "text/html",
-        },
-        body: getUID(),
         method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ uid: getUID() }), // Assuming getUID() is a function you've defined to get the UID
       });
 
-      console.log(await response.text());
-
-      const GUID = await response.text();
+      // Expecting a JSON response
+      const { GUID, needsToJoinGroup } = await response.json();
 
       if (!GUID) {
         throw new Error("No GUID available for connecting to chat");
       }
 
-      await CometChat.joinGroup(GUID, CometChat.GroupType.Public);
+      if (needsToJoinGroup) {
+        // If the support agent needs to join the group
+        await CometChat.joinGroup(GUID, CometChat.GroupType.Public);
+      }
+      // Whether the agent joined now or had already joined, get the group details
       const fetchedGroup = await CometChat.getGroup(GUID);
       return fetchedGroup;
     } catch (error) {
@@ -78,7 +81,6 @@ export const SupportContextProvider: React.FC<SupportContextProviderProps> = ({
 
 export const useSupportContext = () => {
   const context = useContext(SupportContext);
-  console.log(context);
   if (!context) {
     throw new Error(
       "useSupportContext must be used within a SupportContextProviderType"

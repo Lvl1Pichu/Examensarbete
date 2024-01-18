@@ -2,18 +2,35 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const express = require("express");
 const cors = require("cors");
-const session = require("express-session"); // Import express-session
+const session = require("express-session");
 const bodyParser = require("body-parser");
 const fs = require("node:fs/promises");
 
 const app = express();
 const port = 3001;
-console.log(fs);
-const supportQueue = (await fs.readFile("supportQueue.txt", "UTF-8")).split(
-  "\n"
-);
 
-const ChatsWithSupportAgent = [];
+// Declare supportQueue globally so it can be accessed within different routes
+let supportQueue = [];
+let ChatsWithSupportAgent = [];
+
+// Function to load the support queue from a file
+async function loadSupportQueue() {
+  try {
+    const fileContents = await fs.readFile("supportQueue.txt", "utf-8");
+    supportQueue = fileContents.split("\n").filter(Boolean); // Filter out empty lines
+  } catch (error) {
+    if (error.code === "ENOENT") {
+      console.log(
+        "supportQueue.txt does not exist, starting with an empty queue."
+      );
+    } else {
+      console.error("Error reading from supportQueue.txt:", error);
+    }
+  }
+}
+
+// Call the function at the start of your application
+loadSupportQueue();
 
 app.use(bodyParser.json());
 app.use(bodyParser.text());
@@ -24,10 +41,9 @@ app.use(
   })
 );
 
-// Use express-session middleware
 app.use(
   session({
-    secret: "your_secret_key", // Replace with your own secret key
+    secret: "your_secret_key",
     resave: false,
     saveUninitialized: true,
     cookie: { secure: false }, // Use true if you are using https
@@ -39,34 +55,36 @@ const SupportAgent = {
   password: "support123",
 };
 
-app.post("/queue", (req, res) => {
+app.post("/queue", async (req, res) => {
   const GUID = req.body;
   console.log(req.body, "Request body");
   supportQueue.push(GUID);
-  fs.appendFile("supportQueue.txt", GUID);
-  res.status(200).json({ message: "User has been added to Queue" });
+  try {
+    await fs.appendFile("supportQueue.txt", GUID + "\n");
+    res.status(200).json({ message: "User has been added to Queue" });
+  } catch (error) {
+    console.error("Error appending to supportQueue.txt:", error);
+    res.status(500).json({ message: "Error adding user to queue" });
+  }
 });
-
 app.post("/getFromQueue", (req, res) => {
-  const uid = req.body;
-  const joinedChats = ChatsWithSupportAgent.find((_uid) => _uid === uid);
-  let needsToJoinGroup = false;
+  const { uid } = req.body;
+  const joinedChat = ChatsWithSupportAgent.find((chat) => chat.uid === uid);
 
-  if (joinedChats) {
-    res.send(joinedChats.GUID, needsToJoinGroup);
+  if (joinedChat) {
+    // If the agent has already joined, just return the GUID without needing to join again
+    res.status(200).json({ GUID: joinedChat.GUID, needsToJoinGroup: false });
   } else if (supportQueue.length > 0) {
-    res.status(200);
-    needsToJoinGroup = true;
-    const GUID = supportQueue[0];
+    // If the agent hasn't joined, they need to join the group now
+    const GUID = supportQueue.shift(); // This also removes the item
     ChatsWithSupportAgent.push({ GUID, uid });
-    supportQueue.splice(0, 1);
-    res.status(200).json({ GUID, needsToJoinGroup });
+    fs.writeFile("supportQueue.txt", supportQueue.join("\n"), "utf8");
+    res.status(200).json({ GUID, needsToJoinGroup: true });
   } else {
-    res.status(401).send();
+    res.status(401).json({ error: "No available chats in the queue." });
   }
 });
 
-// Login route
 app.post("/login", (req, res) => {
   const { email, password } = req.body;
 
@@ -80,8 +98,14 @@ app.post("/login", (req, res) => {
 });
 
 app.post("/logout", (req, res) => {
-  req.session.destroy(); // Destroying the session
-  res.send("Logged out");
+  req.session.destroy((err) => {
+    if (err) {
+      console.error("Session destruction error:", err);
+      res.status(500).send("Error logging out");
+    } else {
+      res.send("Logged out");
+    }
+  });
 });
 
 app.listen(port, () => {

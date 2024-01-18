@@ -80,9 +80,11 @@ export const SupportPage: React.FC = () => {
     AIIconURL: "",
   });
 
+  const emptyComponent = () => null;
+
   const messageHeaderConfig = new MessageHeaderConfiguration({
     subtitleView: false,
-    menu: () => null,
+    menu: emptyComponent,
   });
 
   return (

@@ -60,9 +60,11 @@ export const ChatModal = () => {
     AIIconURL: "",
   });
 
+  const emptyComponent = () => null;
+
   const messageHeaderConfig = new MessageHeaderConfiguration({
     subtitleView: false,
-    menu: () => null,
+    menu: emptyComponent,
   });
 
   return (
