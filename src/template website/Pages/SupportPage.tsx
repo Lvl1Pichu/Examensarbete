@@ -53,8 +53,6 @@ const InformationAndChatContainer = styled.div`
   height: 100%;
 `;
 
-const TimeStoodInCurrentStatusContainer = styled.div``;
-
 export const SupportPage: React.FC = () => {
   const [ChattingWithGroup, setChattingWithGroup] = useState<
     Group | undefined
@@ -95,7 +93,6 @@ export const SupportPage: React.FC = () => {
             <Button onClick={handleStartChat}>Start</Button>
             <Button>End Chat</Button>
             <Button>Pause</Button>
-            <TimeStoodInCurrentStatusContainer></TimeStoodInCurrentStatusContainer>
           </HeaderButtonContainer>
           <InformationAndChatContainer>
             <CustomerInformationContainer>
