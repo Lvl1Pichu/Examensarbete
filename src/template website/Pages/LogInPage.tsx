@@ -19,6 +19,7 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const { setIsAuthenticated } = useSupportContext();
   const cometChatContext = useCometChat();
+  const SupportContext = useSupportContext();
 
   const navigate = useNavigate();
 
@@ -39,6 +40,7 @@ const Login = () => {
         localStorage.setItem("isAuthenticated", "true");
         const uid = cometChatContext.formatIDForCometChat(email);
         cometChatContext.createOrLoginUser(uid, "SupportAgent");
+        SupportContext.saveUID(uid);
         navigate("/");
       } else {
         console.error(data.message);

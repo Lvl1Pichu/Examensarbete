@@ -4,11 +4,16 @@ const express = require("express");
 const cors = require("cors");
 const session = require("express-session"); // Import express-session
 const bodyParser = require("body-parser");
+const fs = require("node:fs/promises");
 
 const app = express();
 const port = 3001;
+console.log(fs);
+const supportQueue = (await fs.readFile("supportQueue.txt", "UTF-8")).split(
+  "\n"
+);
 
-const supportQueue = [];
+const ChatsWithSupportAgent = [];
 
 app.use(bodyParser.json());
 app.use(bodyParser.text());
@@ -38,14 +43,24 @@ app.post("/queue", (req, res) => {
   const GUID = req.body;
   console.log(req.body, "Request body");
   supportQueue.push(GUID);
+  fs.appendFile("supportQueue.txt", GUID);
   res.status(200).json({ message: "User has been added to Queue" });
 });
 
-app.get("/getFromQueue", (req, res) => {
-  if (supportQueue.length > 0) {
-    console.log(supportQueue);
+app.post("/getFromQueue", (req, res) => {
+  const uid = req.body;
+  const joinedChats = ChatsWithSupportAgent.find((_uid) => _uid === uid);
+  let needsToJoinGroup = false;
+
+  if (joinedChats) {
+    res.send(joinedChats.GUID, needsToJoinGroup);
+  } else if (supportQueue.length > 0) {
     res.status(200);
-    res.send(supportQueue[0]);
+    needsToJoinGroup = true;
+    const GUID = supportQueue[0];
+    ChatsWithSupportAgent.push({ GUID, uid });
+    supportQueue.splice(0, 1);
+    res.status(200).json({ GUID, needsToJoinGroup });
   } else {
     res.status(401).send();
   }

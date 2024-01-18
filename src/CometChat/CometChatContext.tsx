@@ -98,7 +98,6 @@ export const CometChatProvider: React.FC<CometChatProviderProps> = ({
     const formattedString = stringToBeFormatted.replace(/@|\./g, "_");
     return formattedString;
   };
-
   const sendMessage = async (groupId: string, text: string) => {
     try {
       const textMessage = new CometChat.TextMessage(

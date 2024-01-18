@@ -8,7 +8,7 @@ import React, { useState } from "react";
 import { styled } from "styled-components";
 import { CustomerInformation } from "../CustomerInformation";
 import { useSupportContext } from "../../Support Engine/MessageContext";
-import { Group, GroupsRequestBuilder } from "@cometchat/chat-sdk-javascript";
+import { Group } from "@cometchat/chat-sdk-javascript";
 
 const SupportPageContainer = styled.div`
   background-color: #f0f0f7;
@@ -59,29 +59,14 @@ export const SupportPage: React.FC = () => {
   const [ChattingWithGroup, setChattingWithGroup] = useState<
     Group | undefined
   >();
-
   const SupportContext = useSupportContext();
 
   const handleStartChat = async () => {
     try {
-      const limit = 30;
-      const groupsRequest = new GroupsRequestBuilder()
-        .setLimit(limit)
-        .joinedOnly(true)
-        .build();
-
-      const groupList = await groupsRequest.fetchNext();
-      console.log("Groups list fetched successfully", groupList);
-      if (groupList && groupList.length > 0) {
-        setChattingWithGroup(groupList[0]);
-        return;
-      }
-
-      // If the user is not in any group, join a new group
+      throw new Error();
+    } catch {
       const fetchedGroup = await SupportContext.connectSupportAgentToChat();
       setChattingWithGroup(fetchedGroup);
-    } catch (error) {
-      console.error("An error occurred during the start chat process", error);
     }
   };
 

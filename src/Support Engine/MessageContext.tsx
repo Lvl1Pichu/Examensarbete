@@ -6,6 +6,8 @@ type SupportContextType = {
   connectSupportAgentToChat: () => Promise<CometChat.Group>;
   isAuthenticated: boolean;
   setIsAuthenticated: (value: boolean) => void;
+  saveUID: (uid: string) => void;
+  getUID: () => string;
 };
 
 type SupportContextProviderProps = {
@@ -28,13 +30,18 @@ export const SupportContextProvider: React.FC<SupportContextProviderProps> = ({
         headers: {
           "Content-Type": "text/html",
         },
+        body: getUID(),
+        method: "POST",
       });
+
+      console.log(await response.text());
 
       const GUID = await response.text();
 
       if (!GUID) {
         throw new Error("No GUID available for connecting to chat");
       }
+
       await CometChat.joinGroup(GUID, CometChat.GroupType.Public);
       const fetchedGroup = await CometChat.getGroup(GUID);
       return fetchedGroup;
@@ -44,12 +51,24 @@ export const SupportContextProvider: React.FC<SupportContextProviderProps> = ({
     }
   };
 
+  let supportAgentUid = "";
+
+  const saveUID = (uid: string) => {
+    supportAgentUid = uid;
+  };
+
+  const getUID = () => {
+    return supportAgentUid;
+  };
+
   return (
     <SupportContext.Provider
       value={{
         connectSupportAgentToChat,
         isAuthenticated,
         setIsAuthenticated,
+        saveUID,
+        getUID,
       }}
     >
       {children}
