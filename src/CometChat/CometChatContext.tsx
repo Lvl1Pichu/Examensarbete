@@ -48,9 +48,7 @@ export const CometChatProvider: React.FC<CometChatProviderProps> = ({
       return user;
     } catch {
       try {
-        console.log("Attempting to log in");
         const user = await CometChat.login(UID, authKey);
-        console.log("user logged in");
         return user;
       } catch (error) {
         console.error("Error logging in:", error);

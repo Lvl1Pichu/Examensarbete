@@ -47,7 +47,6 @@ export const ChatModal = () => {
         const fetchedGroup = await CometChat.getGroup(ID);
         setChattingWithGroup(fetchedGroup);
         setGroupCreated(true);
-        CometChat.sendMessage(textMessage);
       } catch {
         const createdGroup = await cometChatContext.createGroup(ID);
         setChattingWithGroup(createdGroup);

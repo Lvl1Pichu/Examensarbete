@@ -7,7 +7,7 @@ import React, { useState } from "react";
 import { styled } from "styled-components";
 import { CustomerInformation } from "../CustomerInformation";
 import { useSupportContext } from "../../Support Engine/MessageContext";
-import { Group } from "@cometchat/chat-sdk-javascript";
+import { Group, CometChat } from "@cometchat/chat-sdk-javascript";
 
 const SupportPageContainer = styled.div`
   background-color: #f0f0f7;
@@ -77,14 +77,11 @@ export const SupportPage: React.FC = () => {
     Group | undefined
   >();
   const SupportContext = useSupportContext();
+  let fetchedGroup: Group;
 
   const handleStartChat = async () => {
-    try {
-      throw new Error();
-    } catch {
-      const fetchedGroup = await SupportContext.connectSupportAgentToChat();
-      setChattingWithGroup(fetchedGroup);
-    }
+    fetchedGroup = await SupportContext.connectSupportAgentToChat();
+    setChattingWithGroup(fetchedGroup);
   };
 
   const messageComposerConfig = new MessageComposerConfiguration({
@@ -100,13 +97,17 @@ export const SupportPage: React.FC = () => {
     menu: emptyComponent,
   });
 
+  const handleEndChat = () => {
+    CometChat.deleteGroup(fetchedGroup.getGuid());
+  };
+
   return (
     <>
       <SupportPageContainer>
         <SupportEngineContainer>
           <HeaderButtonContainer>
             <StyledButton onClick={handleStartChat}>Start</StyledButton>
-            <StyledButton>End Chat</StyledButton>
+            <StyledButton onClick={handleEndChat}>End Chat</StyledButton>
             <StyledButton>Pause</StyledButton>
           </HeaderButtonContainer>
           <InformationAndChatContainer>

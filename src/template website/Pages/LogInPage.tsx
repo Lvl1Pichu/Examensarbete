@@ -40,7 +40,9 @@ const Login = () => {
         localStorage.setItem("isAuthenticated", "true");
         const uid = cometChatContext.formatIDForCometChat(email);
         cometChatContext.createOrLoginUser(uid, "SupportAgent");
+        console.log("User logged in");
         SupportContext.saveUID(uid);
+        console.log("UID Saved");
         navigate("/");
       } else {
         console.error(data.message);

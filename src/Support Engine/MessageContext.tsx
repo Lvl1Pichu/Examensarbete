@@ -39,10 +39,15 @@ export const SupportContextProvider: React.FC<SupportContextProviderProps> = ({
         throw new Error("No GUID available for connecting to chat");
       }
       if (needsToJoinGroup) {
-        await CometChat.joinGroup(GUID, CometChat.GroupType.Public);
+        const fetchedGroup = await CometChat.joinGroup(
+          GUID,
+          CometChat.GroupType.Public
+        );
+        return fetchedGroup;
+      } else {
+        const fetchedGroup = await CometChat.getGroup(GUID);
+        return fetchedGroup;
       }
-      const fetchedGroup = await CometChat.getGroup(GUID);
-      return fetchedGroup;
     } catch (error) {
       console.error("An error has occurred when joining the group", error);
       throw error;

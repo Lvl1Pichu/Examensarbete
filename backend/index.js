@@ -9,15 +9,13 @@ const fs = require("node:fs/promises");
 const app = express();
 const port = 3001;
 
-// Declare supportQueue globally so it can be accessed within different routes
 let supportQueue = [];
 let ChatsWithSupportAgent = [];
 
-// Function to load the support queue from a file
 async function loadSupportQueue() {
   try {
     const fileContents = await fs.readFile("supportQueue.txt", "utf-8");
-    supportQueue = fileContents.split("\n").filter(Boolean); // Filter out empty lines
+    supportQueue = fileContents.split("\n");
   } catch (error) {
     if (error.code === "ENOENT") {
       console.log(
@@ -29,7 +27,6 @@ async function loadSupportQueue() {
   }
 }
 
-// Call the function at the start of your application
 loadSupportQueue();
 
 app.use(bodyParser.json());
@@ -37,7 +34,7 @@ app.use(bodyParser.text());
 
 app.use(
   cors({
-    origin: "http://localhost:5173", // Replace with the URL of your React app
+    origin: "http://localhost:5173",
   })
 );
 
@@ -46,7 +43,7 @@ app.use(
     secret: "your_secret_key",
     resave: false,
     saveUninitialized: true,
-    cookie: { secure: false }, // Use true if you are using https
+    cookie: { secure: false },
   })
 );
 
@@ -57,7 +54,6 @@ const SupportAgent = {
 
 app.post("/queue", async (req, res) => {
   const GUID = req.body;
-  console.log(req.body, "Request body");
   supportQueue.push(GUID);
   try {
     await fs.appendFile("supportQueue.txt", GUID + "\n");
@@ -67,7 +63,8 @@ app.post("/queue", async (req, res) => {
     res.status(500).json({ message: "Error adding user to queue" });
   }
 });
-app.post("/getFromQueue", (req, res) => {
+
+app.post("/getFromQueue", async (req, res) => {
   const { uid } = req.body;
   const joinedChat = ChatsWithSupportAgent.find((chat) => chat.uid === uid);
 
@@ -76,9 +73,9 @@ app.post("/getFromQueue", (req, res) => {
     res.status(200).json({ GUID: joinedChat.GUID, needsToJoinGroup: false });
   } else if (supportQueue.length > 0) {
     // If the agent hasn't joined, they need to join the group now
-    const GUID = supportQueue.shift(); // This also removes the item
+    const GUID = supportQueue.shift();
     ChatsWithSupportAgent.push({ GUID, uid });
-    fs.writeFile("supportQueue.txt", supportQueue.join("\n"), "utf8");
+    await fs.writeFile("supportQueue.txt", supportQueue.join("\n"), "utf8");
     res.status(200).json({ GUID, needsToJoinGroup: true });
   } else {
     res.status(401).json({ error: "No available chats in the queue." });
