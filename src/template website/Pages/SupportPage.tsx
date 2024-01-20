@@ -3,7 +3,6 @@ import {
   MessageComposerConfiguration,
   MessageHeaderConfiguration,
 } from "@cometchat/chat-uikit-react";
-import { Button } from "@mui/material";
 import React, { useState } from "react";
 import { styled } from "styled-components";
 import { CustomerInformation } from "../CustomerInformation";
@@ -19,7 +18,6 @@ const SupportPageContainer = styled.div`
 `;
 
 const SupportEngineContainer = styled.div`
-  border: 1px solid black;
   width: 80vh;
   height: 500px;
   display: flex;
@@ -27,24 +25,45 @@ const SupportEngineContainer = styled.div`
 `;
 
 const HeaderButtonContainer = styled.div`
-  border: 1px solid black;
-  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 2rem;
   padding: 10px;
-  text-align: center;
+  background-color: #ffffff;
+`;
+
+const StyledButton = styled.button`
+  margin: 0 5px;
+  padding: 6px 15px;
+  font-size: 14px;
+  text-transform: none;
+  border: 1px solid #d4d4d4;
+  border-radius: 4px;
+  color: #555;
+  background-color: #fafafa;
+
+  &:hover {
+    background-color: #f0f0f0;
+    border-color: #c0c0c0;
+  }
+
+  &.active {
+    border-color: #a0a0a0;
+    background-color: #e0e0e0;
+  }
 `;
 
 const CustomerInformationContainer = styled.div`
   flex: 1;
-  border: 1px solid black;
   width: 100%;
   height: 100%;
 `;
 
 const ChatWindow = styled.div`
   flex: 2;
-  border: 1px solid black;
   width: 100%;
   height: 100%;
+  box-shadow: 4px 4px 8px 0 rgba(0, 0, 0, 0.2);
 `;
 
 const InformationAndChatContainer = styled.div`
@@ -69,12 +88,8 @@ export const SupportPage: React.FC = () => {
   };
 
   const messageComposerConfig = new MessageComposerConfiguration({
-    attachmentIconURL: "",
-    emojiIconURL: "",
-    secondaryButtonView: null,
-    auxilaryButtonView: null,
-    hideLiveReaction: true,
-    hideVoiceRecording: true,
+    hideLiveReaction: false,
+    hideVoiceRecording: false,
     AIIconURL: "",
   });
 
@@ -90,9 +105,9 @@ export const SupportPage: React.FC = () => {
       <SupportPageContainer>
         <SupportEngineContainer>
           <HeaderButtonContainer>
-            <Button onClick={handleStartChat}>Start</Button>
-            <Button>End Chat</Button>
-            <Button>Pause</Button>
+            <StyledButton onClick={handleStartChat}>Start</StyledButton>
+            <StyledButton>End Chat</StyledButton>
+            <StyledButton>Pause</StyledButton>
           </HeaderButtonContainer>
           <InformationAndChatContainer>
             <CustomerInformationContainer>

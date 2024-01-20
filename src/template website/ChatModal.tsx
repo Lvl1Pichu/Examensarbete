@@ -33,17 +33,26 @@ export const ChatModal = () => {
   const handleSubmit = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
 
+    const ID = cometChatContext.formatIDForCometChat(formData.email);
+
+    const textMessage = new CometChat.TextMessage(
+      ID,
+      formData.problem,
+      CometChat.RECEIVER_TYPE.GROUP
+    );
+
     try {
-      const ID = cometChatContext.formatIDForCometChat(formData.email);
       await cometChatContext.createOrLoginUser(formData.name, ID);
       try {
         const fetchedGroup = await CometChat.getGroup(ID);
         setChattingWithGroup(fetchedGroup);
         setGroupCreated(true);
+        CometChat.sendMessage(textMessage);
       } catch {
         const createdGroup = await cometChatContext.createGroup(ID);
         setChattingWithGroup(createdGroup);
         setGroupCreated(true);
+        CometChat.sendMessage(textMessage);
       }
     } catch (error) {
       console.error("Error handling form submission:", error);

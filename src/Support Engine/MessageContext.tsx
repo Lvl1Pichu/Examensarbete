@@ -31,21 +31,16 @@ export const SupportContextProvider: React.FC<SupportContextProviderProps> = ({
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ uid: getUID() }), // Assuming getUID() is a function you've defined to get the UID
+        body: JSON.stringify({ uid: getUID() }),
       });
-
-      // Expecting a JSON response
       const { GUID, needsToJoinGroup } = await response.json();
 
       if (!GUID) {
         throw new Error("No GUID available for connecting to chat");
       }
-
       if (needsToJoinGroup) {
-        // If the support agent needs to join the group
         await CometChat.joinGroup(GUID, CometChat.GroupType.Public);
       }
-      // Whether the agent joined now or had already joined, get the group details
       const fetchedGroup = await CometChat.getGroup(GUID);
       return fetchedGroup;
     } catch (error) {

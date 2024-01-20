@@ -31,6 +31,13 @@ const CometChatContext = createContext<CometChatContextType | undefined>(
 export const CometChatProvider: React.FC<CometChatProviderProps> = ({
   children,
 }) => {
+  let groupCounter = 0;
+
+  function generateGroupName() {
+    groupCounter += 1;
+    return `Support ticket #${groupCounter}`;
+  }
+
   const loginUser = async (UID: string) => {
     const authKey = "64b7d20f19139473eb976616d751e447b3a8f516";
     try {
@@ -71,7 +78,7 @@ export const CometChatProvider: React.FC<CometChatProviderProps> = ({
     }
   };
   const createGroup = async (GUID: string) => {
-    const groupName: string = "Support ticket #21387";
+    const groupName: string = generateGroupName();
     const groupType: string = CometChat.GROUP_TYPE.PUBLIC;
 
     const group: CometChat.Group = new CometChat.Group(

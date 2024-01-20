@@ -7,25 +7,35 @@ const CustomerInfoContainer = styled.div`
   flex-direction: column;
   justify-content: start;
   align-items: flex-start;
+  background-color: #ffffff;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  font-family: "Arial", sans-serif;
+  height: 100%;
 `;
 
 const Label = styled.span`
   font-weight: bold;
+  color: #333333;
+  margin-bottom: 10px;
 `;
-
 const InfoText = styled.p`
-  margin: 5px 0;
-  padding: 5px;
-  width: 100%;
+  margin: 0 0 20px 0;
+  padding: 10px;
+  width: calc(100% - 20px);
+  background-color: #f9f9f9;
+  border: 1px solid #e1e1e1;
   border-radius: 5px;
-  background-color: #f5f5f5;
-`;
+  transition: background-color 0.3s, box-shadow 0.3s;
 
+  &:hover {
+    background-color: #eef2f7;
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2);
+  }
+`;
 interface CustomerInformationProps {
   groupId: string;
 }
 
-// CustomerInformation component
 export const CustomerInformation: React.FC<CustomerInformationProps> = ({
   groupId,
 }) => {
@@ -35,7 +45,6 @@ export const CustomerInformation: React.FC<CustomerInformationProps> = ({
 
   useEffect(() => {
     const fetchGroupInfo = async () => {
-      // Simulating fetching group data
       const groupData = {
         name: "John Doe",
         problem: "Issue with payment processing",
