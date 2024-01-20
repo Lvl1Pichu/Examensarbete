@@ -59,12 +59,10 @@ export const ChatModal = () => {
   };
 
   const messageComposerConfig = new MessageComposerConfiguration({
-    attachmentIconURL: "",
-    emojiIconURL: "",
     secondaryButtonView: null,
     auxilaryButtonView: null,
-    hideLiveReaction: true,
     hideVoiceRecording: true,
+    hideLiveReaction: true,
     AIIconURL: "",
   });
 
