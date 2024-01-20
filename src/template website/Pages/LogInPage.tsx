@@ -12,11 +12,14 @@ import {
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useSupportContext } from "../../Support Engine/MessageContext";
+import { useCometChat } from "../../CometChat/CometChatContext";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const { setIsAuthenticated } = useSupportContext();
+  const cometChatContext = useCometChat();
+  const SupportContext = useSupportContext();
 
   const navigate = useNavigate();
 
@@ -33,9 +36,13 @@ const Login = () => {
       const data = await response.json();
 
       if (response.status === 200) {
-        console.log("Logged in!");
         setIsAuthenticated(true);
         localStorage.setItem("isAuthenticated", "true");
+        const uid = cometChatContext.formatIDForCometChat(email);
+        cometChatContext.createOrLoginUser(uid, "SupportAgent");
+        console.log("User logged in");
+        SupportContext.saveUID(uid);
+        console.log("UID Saved");
         navigate("/");
       } else {
         console.error(data.message);

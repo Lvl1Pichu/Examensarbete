@@ -1,8 +1,12 @@
 import { TextField } from "@mui/material";
-import { ChangeEvent, FormEvent, useEffect, useState } from "react";
+import { ChangeEvent, FormEvent, useState } from "react";
 import styled from "styled-components";
 import { useCometChat } from "../CometChat/CometChatContext";
-import { CometChatMessages } from "@cometchat/chat-uikit-react";
+import {
+  CometChatMessages,
+  MessageComposerConfiguration,
+  MessageHeaderConfiguration,
+} from "@cometchat/chat-uikit-react";
 import { CometChat, Group } from "@cometchat/chat-sdk-javascript";
 
 export const ChatModal = () => {
@@ -19,8 +23,6 @@ export const ChatModal = () => {
     Group | undefined
   >();
 
-  useEffect(() => {});
-
   const handleChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ): void => {
@@ -31,8 +33,15 @@ export const ChatModal = () => {
   const handleSubmit = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
 
+    const ID = cometChatContext.formatIDForCometChat(formData.email);
+
+    const textMessage = new CometChat.TextMessage(
+      ID,
+      formData.problem,
+      CometChat.RECEIVER_TYPE.GROUP
+    );
+
     try {
-      const ID = cometChatContext.formatIDForCometChat(formData.email);
       await cometChatContext.createOrLoginUser(formData.name, ID);
       try {
         const fetchedGroup = await CometChat.getGroup(ID);
@@ -42,17 +51,39 @@ export const ChatModal = () => {
         const createdGroup = await cometChatContext.createGroup(ID);
         setChattingWithGroup(createdGroup);
         setGroupCreated(true);
+        CometChat.sendMessage(textMessage);
       }
     } catch (error) {
       console.error("Error handling form submission:", error);
     }
   };
 
+  const messageComposerConfig = new MessageComposerConfiguration({
+    attachmentIconURL: "",
+    emojiIconURL: "",
+    secondaryButtonView: null,
+    auxilaryButtonView: null,
+    hideLiveReaction: true,
+    hideVoiceRecording: true,
+    AIIconURL: "",
+  });
+
+  const emptyComponent = () => null;
+
+  const messageHeaderConfig = new MessageHeaderConfiguration({
+    subtitleView: false,
+    menu: emptyComponent,
+  });
+
   return (
     <ChatContainer>
       {groupCreated ? (
         <MessagesContainer>
-          <CometChatMessages group={ChattingWithGroup} />
+          <CometChatMessages
+            group={ChattingWithGroup}
+            messageComposerConfiguration={messageComposerConfig}
+            messageHeaderConfiguration={messageHeaderConfig}
+          />
         </MessagesContainer>
       ) : (
         <form onSubmit={handleSubmit}>

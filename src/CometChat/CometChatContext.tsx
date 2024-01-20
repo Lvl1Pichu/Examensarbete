@@ -31,6 +31,13 @@ const CometChatContext = createContext<CometChatContextType | undefined>(
 export const CometChatProvider: React.FC<CometChatProviderProps> = ({
   children,
 }) => {
+  let groupCounter = 0;
+
+  function generateGroupName() {
+    groupCounter += 1;
+    return `Support ticket #${groupCounter}`;
+  }
+
   const loginUser = async (UID: string) => {
     const authKey = "64b7d20f19139473eb976616d751e447b3a8f516";
     try {
@@ -41,9 +48,7 @@ export const CometChatProvider: React.FC<CometChatProviderProps> = ({
       return user;
     } catch {
       try {
-        console.log("Attempting to log in");
         const user = await CometChat.login(UID, authKey);
-        console.log("user logged in");
         return user;
       } catch (error) {
         console.error("Error logging in:", error);
@@ -71,7 +76,7 @@ export const CometChatProvider: React.FC<CometChatProviderProps> = ({
     }
   };
   const createGroup = async (GUID: string) => {
-    const groupName: string = "Support ticket #21387";
+    const groupName: string = generateGroupName();
     const groupType: string = CometChat.GROUP_TYPE.PUBLIC;
 
     const group: CometChat.Group = new CometChat.Group(
@@ -83,6 +88,10 @@ export const CometChatProvider: React.FC<CometChatProviderProps> = ({
     try {
       const createdGroup = await CometChat.createGroup(group);
       console.log("Group created successfully:", createdGroup);
+      fetch("http://localhost:3001/queue", {
+        body: GUID,
+        method: "POST",
+      });
       return createdGroup;
     } catch (error) {
       console.log("Group creation failed with exception:", error);
@@ -94,7 +103,6 @@ export const CometChatProvider: React.FC<CometChatProviderProps> = ({
     const formattedString = stringToBeFormatted.replace(/@|\./g, "_");
     return formattedString;
   };
-
   const sendMessage = async (groupId: string, text: string) => {
     try {
       const textMessage = new CometChat.TextMessage(

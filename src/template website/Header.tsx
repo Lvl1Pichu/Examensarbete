@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import { useSupportContext } from "../Support Engine/MessageContext";
+import { CometChat } from "@cometchat/chat-sdk-javascript";
 
 const Header: React.FC = () => {
   const [isMenuOpen, setMenuOpen] = useState(false);
@@ -13,6 +14,7 @@ const Header: React.FC = () => {
     try {
       await fetch("http://localhost:3001/logout", { method: "POST" });
       setIsAuthenticated(false);
+      CometChat.logout();
     } catch (error) {
       console.error("Logout failed:", error);
     }
