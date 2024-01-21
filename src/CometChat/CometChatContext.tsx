@@ -119,6 +119,8 @@ export const CometChatProvider: React.FC<CometChatProviderProps> = ({
   };
 
   const logout = async () => {
+    const UID = await CometChat.getLoggedInUser();
+    CometChat.deleteGroup(UID);
     await CometChat.logout();
   };
 

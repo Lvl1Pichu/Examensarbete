@@ -1,5 +1,5 @@
 import { TextField } from "@mui/material";
-import { ChangeEvent, FormEvent, useState } from "react";
+import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import styled from "styled-components";
 import { useCometChat } from "../CometChat/CometChatContext";
 import {
@@ -24,12 +24,32 @@ export const ChatModal = () => {
   const [ChattingWithGroup, setChattingWithGroup] = useState<
     Group | undefined
   >();
-
   const handleChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ): void => {
     const { name, value } = e.target;
-    setFormData((prevData) => ({ ...prevData, [name]: value }));
+    setFormData((prevData) => {
+      const newData = { ...prevData, [name]: value };
+      return newData;
+    });
+  };
+
+  useEffect(() => {
+    const userInfo = MessageContext.getCustomerInfo();
+    if (userInfo?.email) {
+      const ID = cometChatContext.formatIDForCometChat(userInfo.email);
+      checkForExistingGroup(ID);
+    }
+  }, [MessageContext, cometChatContext]);
+
+  const checkForExistingGroup = async (ID: string) => {
+    try {
+      const fetchedGroup = await CometChat.getGroup(ID);
+      setChattingWithGroup(fetchedGroup);
+      setGroupCreated(true);
+    } catch (error) {
+      console.log("No existing group found for this user:", error);
+    }
   };
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
@@ -55,6 +75,7 @@ export const ChatModal = () => {
         setGroupCreated(true);
         CometChat.sendMessage(textMessage);
         MessageContext.saveCustomerInfo(formData);
+        console.log(formData);
       }
     } catch (error) {
       console.error("Error handling form submission:", error);
