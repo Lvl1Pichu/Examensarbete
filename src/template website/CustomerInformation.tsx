@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
+import { useSupportContext } from "../Support Engine/MessageContext";
 
 const CustomerInfoContainer = styled.div`
   padding: 20px;
@@ -42,21 +43,21 @@ export const CustomerInformation: React.FC<CustomerInformationProps> = ({
   const [name, setName] = useState("");
   const [problem, setProblem] = useState("");
   const [email, setEmail] = useState("");
+  const MessageContext = useSupportContext();
 
   useEffect(() => {
-    const fetchGroupInfo = async () => {
-      const groupData = {
-        name: "John Doe",
-        problem: "Issue with payment processing",
-        email: "johndoe@example.com",
-      };
-      setName(groupData.name);
-      setProblem(groupData.problem);
-      setEmail(groupData.email);
+    const fetchGroupInfo = () => {
+      const customerInfo = MessageContext.getCustomerInfo();
+      console.log(customerInfo);
+      if (customerInfo) {
+        setName(customerInfo.name);
+        setProblem(customerInfo.problem);
+        setEmail(customerInfo.email);
+      }
     };
 
     fetchGroupInfo();
-  }, [groupId]);
+  }, [MessageContext, groupId]);
 
   return (
     <CustomerInfoContainer>

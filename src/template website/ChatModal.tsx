@@ -8,9 +8,11 @@ import {
   MessageHeaderConfiguration,
 } from "@cometchat/chat-uikit-react";
 import { CometChat, Group } from "@cometchat/chat-sdk-javascript";
+import { useSupportContext } from "../Support Engine/MessageContext";
 
 export const ChatModal = () => {
   const cometChatContext = useCometChat();
+  const MessageContext = useSupportContext();
 
   const [formData, setFormData] = useState({
     name: "",
@@ -52,6 +54,7 @@ export const ChatModal = () => {
         setChattingWithGroup(createdGroup);
         setGroupCreated(true);
         CometChat.sendMessage(textMessage);
+        MessageContext.saveCustomerInfo(formData);
       }
     } catch (error) {
       console.error("Error handling form submission:", error);
@@ -130,6 +133,7 @@ export const ChatModal = () => {
 
 const MessagesContainer = styled.div`
   height: 400px;
+  width: 320px;
 `;
 
 const ChatContainer = styled.div`
