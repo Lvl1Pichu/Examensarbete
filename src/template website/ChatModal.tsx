@@ -95,7 +95,7 @@ export const ChatModal = () => {
     await CometChat.sendMessage(textMessage);
     MessageContext.saveCustomerInfo(ID);
 
-    await sendFormDataToBackend(formData, ID);
+    await sendFormDataToBackend(formData, ID.toLowerCase());
   };
 
   const sendFormDataToBackend = async (formData: FormData, ID: string) => {

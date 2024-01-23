@@ -3,7 +3,7 @@ import { ReactNode, createContext, useContext, useState } from "react";
 import { CometChat } from "@cometchat/chat-sdk-javascript";
 
 type SupportContextType = {
-  connectSupportAgentToChat: () => Promise<CometChat.Group>;
+  connectSupportAgentToChat: (UID: string) => Promise<CometChat.Group>;
   isAuthenticated: boolean;
   setIsAuthenticated: (value: boolean) => void;
   saveUID: (uid: string) => void;
@@ -32,14 +32,15 @@ export const SupportContextProvider: React.FC<SupportContextProviderProps> = ({
 
   const [supportAgentUid, setSupportAgentUid] = useState<string>("");
 
-  const connectSupportAgentToChat = async () => {
+  const connectSupportAgentToChat = async (UID: string) => {
+    console.log(UID);
     try {
       const response = await fetch("http://localhost:3001/getFromQueue", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ uid: getUID() }),
+        body: JSON.stringify({ UID }),
       });
       const { GUID, needsToJoinGroup } = await response.json();
 

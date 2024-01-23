@@ -113,6 +113,26 @@ app.post("/SaveGroupData", async (req, res) => {
   }
 });
 
+app.get('/GetCustomerData/:id', async (req, res) => {
+  const id = req.params.id;
+
+  try {
+    // Read the database.json file
+    const data = await fs.readFile('database.json', 'utf8');
+    const database = JSON.parse(data);
+
+    // Check if the ID exists in the database
+    if (database[id]) {
+      res.status(200).json(database[id]);
+    } else {
+      res.status(404).json({ message: 'Data not found for the given ID' });
+    }
+  } catch (error) {
+    console.error('Error reading from the database:', error);
+    res.status(500).json({ message: 'Error retrieving data' });
+  }
+});
+
 app.post("/login", (req, res) => {
   const { email, password } = req.body;
 

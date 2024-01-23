@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { useSupportContext } from "../Support Engine/SupportContext";
-
 const CustomerInfoContainer = styled.div`
   padding: 20px;
   display: flex;
@@ -12,14 +11,20 @@ const CustomerInfoContainer = styled.div`
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
   font-family: "Arial", sans-serif;
   height: 100%;
+  width: 100%; // Ensure full width
+  max-width: 600px; // Max width for larger screens
+  margin: auto; // Center the container on the page
 `;
 
 const Label = styled.span`
   font-weight: bold;
   color: #333333;
   margin-bottom: 10px;
+  width: 100%;
 `;
+
 const InfoText = styled.p`
+  word-wrap: break-word; // Ensures text wraps to avoid overflow
   margin: 0 0 20px 0;
   padding: 10px;
   width: calc(100% - 20px);
@@ -27,48 +32,58 @@ const InfoText = styled.p`
   border: 1px solid #e1e1e1;
   border-radius: 5px;
   transition: background-color 0.3s, box-shadow 0.3s;
-
   &:hover {
     background-color: #eef2f7;
     box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2);
+  }
+  @media (max-width: 768px) {
+    font-size: 14px; // Smaller font size for smaller screens
   }
 `;
 interface CustomerInformationProps {
   groupId: string;
 }
 
-export const CustomerInformation: React.FC<CustomerInformationProps> = ({
-  groupId,
-}) => {
-  const [name, setName] = useState("");
-  const [problem, setProblem] = useState("");
-  const [email, setEmail] = useState("");
-  const MessageContext = useSupportContext();
+export const CustomerInformation: React.FC<CustomerInformationProps> = ({}) => {
+  const [customerData, setCustomerData] = useState({
+    name: "",
+    problem: "",
+    email: "",
+  });
+  const { getCustomerInfo } = useSupportContext();
 
   useEffect(() => {
-    const fetchGroupInfo = () => {
-      const customerInfo = MessageContext.getCustomerInfo();
-      console.log(customerInfo);
-      if (customerInfo) {
-        setName(customerInfo.name);
-        setProblem(customerInfo.problem);
-        setEmail(customerInfo.email);
-      }
-    };
+    const GUID = getCustomerInfo();
+    if (GUID) {
+      const fetchCustomerData = async () => {
+        try {
+          const response = await fetch(
+            `http://localhost:3001/GetCustomerData/${GUID}`
+          );
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          const data = await response.json();
+          setCustomerData(data); // Update state with the fetched data
+        } catch (error) {
+          console.error("Error fetching customer data:", error);
+        }
+      };
 
-    fetchGroupInfo();
-  }, [MessageContext, groupId]);
+      fetchCustomerData();
+    }
+  }, [getCustomerInfo]);
 
   return (
     <CustomerInfoContainer>
       <Label>Name:</Label>
-      <InfoText>{name}</InfoText>
-
-      <Label>Problem:</Label>
-      <InfoText>{problem}</InfoText>
+      <InfoText>{customerData.name}</InfoText>
 
       <Label>Email:</Label>
-      <InfoText>{email}</InfoText>
+      <InfoText>{customerData.email}</InfoText>
+
+      <Label>Problem:</Label>
+      <InfoText>{customerData.problem}</InfoText>
     </CustomerInfoContainer>
   );
 };

@@ -29,7 +29,7 @@ const HeaderButtonContainer = styled.div`
   align-items: center;
   gap: 2rem;
   padding: 10px;
-  background-color: #ffffff;
+  background-color: #cb99e9;
 `;
 
 const StyledButton = styled.button`
@@ -64,6 +64,9 @@ const ChatWindow = styled.div`
   width: 100%;
   height: 100%;
   box-shadow: 4px 4px 8px 0 rgba(0, 0, 0, 0.2);
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 
 const InformationAndChatContainer = styled.div`
@@ -72,16 +75,40 @@ const InformationAndChatContainer = styled.div`
   height: 100%;
 `;
 
+const Loader = styled.div`
+  border: 5px solid #f3f3f3; /* Light grey */
+  border-top: 5px solid #3498db; /* Blue */
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 2s linear infinite;
+
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+`;
+
 export const SupportPage: React.FC = () => {
   const [ChattingWithGroup, setChattingWithGroup] = useState<
     Group | undefined
   >();
   const SupportContext = useSupportContext();
   let fetchedGroup: Group;
+  const [groupGUID, setGroupGUID] = useState<string>("");
+  const [IsInGroup, setIsInGroup] = useState<boolean>(false);
 
   const handleStartChat = async () => {
-    fetchedGroup = await SupportContext.connectSupportAgentToChat();
+    const UID = SupportContext.getUID();
+    fetchedGroup = await SupportContext.connectSupportAgentToChat(UID);
     setChattingWithGroup(fetchedGroup);
+    setGroupGUID(fetchedGroup.getGuid());
+    setIsInGroup(true);
+    SupportContext.saveCustomerInfo(groupGUID);
   };
 
   const messageComposerConfig = new MessageComposerConfiguration({
@@ -97,9 +124,9 @@ export const SupportPage: React.FC = () => {
     menu: emptyComponent,
   });
 
-  const handleEndChat = () => {
-    CometChat.leaveGroup(fetchedGroup.getGuid());
-    setChattingWithGroup(undefined);
+  const handleEndChat = async () => {
+    setIsInGroup(false);
+    await CometChat.leaveGroup(groupGUID);
   };
 
   return (
@@ -109,18 +136,22 @@ export const SupportPage: React.FC = () => {
           <HeaderButtonContainer>
             <StyledButton onClick={handleStartChat}>Start</StyledButton>
             <StyledButton onClick={handleEndChat}>End Chat</StyledButton>
-            <StyledButton>Pause</StyledButton>
           </HeaderButtonContainer>
           <InformationAndChatContainer>
             <CustomerInformationContainer>
               <CustomerInformation groupId={""}></CustomerInformation>
             </CustomerInformationContainer>
+
             <ChatWindow>
-              <CometChatMessages
-                group={ChattingWithGroup}
-                messageComposerConfiguration={messageComposerConfig}
-                messageHeaderConfiguration={messageHeaderConfig}
-              />{" "}
+              {!IsInGroup ? (
+                <Loader />
+              ) : (
+                <CometChatMessages
+                  group={ChattingWithGroup}
+                  messageComposerConfiguration={messageComposerConfig}
+                  messageHeaderConfiguration={messageHeaderConfig}
+                />
+              )}
             </ChatWindow>
           </InformationAndChatContainer>
         </SupportEngineContainer>
