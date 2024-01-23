@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import { useSupportContext } from "../Support Engine/MessageContext";
+import { useSupportContext } from "../Support Engine/SupportContext";
 
 const CustomerInfoContainer = styled.div`
   padding: 20px;

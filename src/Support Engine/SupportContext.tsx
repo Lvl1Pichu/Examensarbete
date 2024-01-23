@@ -69,6 +69,7 @@ export const SupportContextProvider: React.FC<SupportContextProviderProps> = ({
   const getUID = () => {
     return supportAgentUid;
   };
+
   const saveCustomerInfo = (ID: string) => {
     setCustomerInformation(ID);
   };

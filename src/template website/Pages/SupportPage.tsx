@@ -6,7 +6,7 @@ import {
 import React, { useState } from "react";
 import { styled } from "styled-components";
 import { CustomerInformation } from "../CustomerInformation";
-import { useSupportContext } from "../../Support Engine/MessageContext";
+import { useSupportContext } from "../../Support Engine/SupportContext";
 import { Group, CometChat } from "@cometchat/chat-sdk-javascript";
 
 const SupportPageContainer = styled.div`
@@ -98,7 +98,8 @@ export const SupportPage: React.FC = () => {
   });
 
   const handleEndChat = () => {
-    CometChat.deleteGroup(fetchedGroup.getGuid());
+    CometChat.leaveGroup(fetchedGroup.getGuid());
+    setChattingWithGroup(undefined);
   };
 
   return (

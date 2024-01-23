@@ -82,6 +82,37 @@ app.post("/getFromQueue", async (req, res) => {
   }
 });
 
+app.post("/SaveGroupData", async (req, res) => {
+  const { formData, ID } = req.body;
+
+  try {
+    let database = {};
+
+    try {
+      const data = await fs.readFile("database.json", "utf8");
+      // Initialize database with an empty object if the file is empty
+      database = data ? JSON.parse(data) : {};
+    } catch (error) {
+      if (error.code === "ENOENT") {
+        console.log("database.json does not exist, creating new file.");
+      } else {
+        console.error("Error reading from database.json:", error);
+        throw error;
+      }
+    }
+
+    // Update the database object with new data
+    database[ID] = formData;
+
+    // Write the updated database back to database.json
+    await fs.writeFile("database.json", JSON.stringify(database, null, 2), "utf8");
+    res.status(200).json({ message: "Group data saved successfully" });
+  } catch (error) {
+    console.error("Error in /SaveGroupData endpoint:", error);
+    res.status(500).json({ message: "Error saving group data", error: error.message });
+  }
+});
+
 app.post("/login", (req, res) => {
   const { email, password } = req.body;
 

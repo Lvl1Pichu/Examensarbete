@@ -8,7 +8,13 @@ import {
   MessageHeaderConfiguration,
 } from "@cometchat/chat-uikit-react";
 import { CometChat, Group } from "@cometchat/chat-sdk-javascript";
-import { useSupportContext } from "../Support Engine/MessageContext";
+import { useSupportContext } from "../Support Engine/SupportContext";
+
+type FormData = {
+  name: string;
+  email: string;
+  problem: string;
+};
 
 export const ChatModal = () => {
   const cometChatContext = useCometChat();
@@ -53,32 +59,71 @@ export const ChatModal = () => {
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
-
     const ID = cometChatContext.formatIDForCometChat(formData.email);
 
-    const textMessage = new CometChat.TextMessage(
+    try {
+      await createUserAndHandleGroup(ID);
+    } catch (error) {
+      console.error("Error handling form submission:", error);
+    }
+  };
+
+  const createUserAndHandleGroup = async (ID: string) => {
+    await cometChatContext.createOrLoginUser(formData.name, ID);
+    await handleGroup(ID);
+  };
+
+  const handleGroup = async (ID: string) => {
+    try {
+      const fetchedGroup = await CometChat.getGroup(ID);
+      handleExistingGroup(fetchedGroup);
+    } catch {
+      await createNewGroup(ID);
+    }
+  };
+
+  const handleExistingGroup = (group: Group) => {
+    setChattingWithGroup(group);
+    setGroupCreated(true);
+  };
+
+  const createNewGroup = async (ID: string) => {
+    const createdGroup = await cometChatContext.createGroup(ID);
+    setChattingWithGroup(createdGroup);
+    setGroupCreated(true);
+    const textMessage = createTextMessage(ID);
+    await CometChat.sendMessage(textMessage);
+    MessageContext.saveCustomerInfo(ID);
+
+    await sendFormDataToBackend(formData, ID);
+  };
+
+  const sendFormDataToBackend = async (formData: FormData, ID: string) => {
+    try {
+      const response = await fetch("http://localhost:3001/SaveGroupData", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ formData, ID }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to send data to the backend");
+      }
+
+      console.log("Data sent successfully");
+    } catch (error) {
+      console.error("Error sending data to backend:", error);
+    }
+  };
+
+  const createTextMessage = (ID: string) => {
+    return new CometChat.TextMessage(
       ID,
       formData.problem,
       CometChat.RECEIVER_TYPE.GROUP
     );
-
-    try {
-      await cometChatContext.createOrLoginUser(formData.name, ID);
-      try {
-        const fetchedGroup = await CometChat.getGroup(ID);
-        setChattingWithGroup(fetchedGroup);
-        setGroupCreated(true);
-      } catch {
-        const createdGroup = await cometChatContext.createGroup(ID);
-        setChattingWithGroup(createdGroup);
-        setGroupCreated(true);
-        CometChat.sendMessage(textMessage);
-        MessageContext.saveCustomerInfo(ID);
-        console.log(formData);
-      }
-    } catch (error) {
-      console.error("Error handling form submission:", error);
-    }
   };
 
   const messageComposerConfig = new MessageComposerConfiguration({

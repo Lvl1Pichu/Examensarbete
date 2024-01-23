@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
-import { useSupportContext } from "../Support Engine/MessageContext";
+import { useSupportContext } from "../Support Engine/SupportContext";
 import { CometChat } from "@cometchat/chat-sdk-javascript";
 
 const Header: React.FC = () => {
