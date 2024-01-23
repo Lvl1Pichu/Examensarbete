@@ -35,9 +35,8 @@ export const ChatModal = () => {
   };
 
   useEffect(() => {
-    const userInfo = MessageContext.getCustomerInfo();
-    if (userInfo?.email) {
-      const ID = cometChatContext.formatIDForCometChat(userInfo.email);
+    const ID = MessageContext.getCustomerInfo();
+    if (ID) {
       checkForExistingGroup(ID);
     }
   }, [MessageContext, cometChatContext]);
@@ -74,7 +73,7 @@ export const ChatModal = () => {
         setChattingWithGroup(createdGroup);
         setGroupCreated(true);
         CometChat.sendMessage(textMessage);
-        MessageContext.saveCustomerInfo(formData);
+        MessageContext.saveCustomerInfo(ID);
         console.log(formData);
       }
     } catch (error) {

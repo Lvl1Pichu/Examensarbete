@@ -8,14 +8,8 @@ type SupportContextType = {
   setIsAuthenticated: (value: boolean) => void;
   saveUID: (uid: string) => void;
   getUID: () => string;
-  saveCustomerInfo: (formData: CustomerInfo) => void;
-  getCustomerInfo: () => CustomerInfo | undefined;
-};
-
-type CustomerInfo = {
-  name: string;
-  email: string;
-  problem: string;
+  saveCustomerInfo: (ID: string) => void;
+  getCustomerInfo: () => string | undefined;
 };
 
 type SupportContextProviderProps = {
@@ -33,7 +27,7 @@ export const SupportContextProvider: React.FC<SupportContextProviderProps> = ({
   });
 
   const [customerInformation, setCustomerInformation] = useState<
-    CustomerInfo | undefined
+    string | undefined
   >();
 
   const [supportAgentUid, setSupportAgentUid] = useState<string>("");
@@ -75,8 +69,8 @@ export const SupportContextProvider: React.FC<SupportContextProviderProps> = ({
   const getUID = () => {
     return supportAgentUid;
   };
-  const saveCustomerInfo = (formData: CustomerInfo) => {
-    setCustomerInformation(formData);
+  const saveCustomerInfo = (ID: string) => {
+    setCustomerInformation(ID);
   };
 
   const getCustomerInfo = () => {
