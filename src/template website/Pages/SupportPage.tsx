@@ -104,11 +104,19 @@ export const SupportPage: React.FC = () => {
 
   const handleStartChat = async () => {
     const UID = SupportContext.getUID();
-    fetchedGroup = await SupportContext.connectSupportAgentToChat(UID);
-    setChattingWithGroup(fetchedGroup);
-    setGroupGUID(fetchedGroup.getGuid());
-    setIsInGroup(true);
-    SupportContext.saveCustomerInfo(groupGUID);
+    try {
+      fetchedGroup = await SupportContext.connectSupportAgentToChat(UID);
+      if (fetchedGroup) {
+        setChattingWithGroup(fetchedGroup);
+        setGroupGUID(fetchedGroup.getGuid());
+        setIsInGroup(true);
+        SupportContext.saveCustomerInfo(fetchedGroup.getGuid());
+      } else {
+        console.error("Failed to join the group");
+      }
+    } catch (error) {
+      console.error("Error joining the group:", error);
+    }
   };
 
   const messageComposerConfig = new MessageComposerConfiguration({
@@ -117,7 +125,7 @@ export const SupportPage: React.FC = () => {
     AIIconURL: "",
   });
 
-  const emptyComponent = () => null;
+  const emptyComponent = <></>;
 
   const messageHeaderConfig = new MessageHeaderConfiguration({
     subtitleView: false,

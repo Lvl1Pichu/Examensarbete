@@ -33,7 +33,6 @@ export const SupportContextProvider: React.FC<SupportContextProviderProps> = ({
   const [supportAgentUid, setSupportAgentUid] = useState<string>("");
 
   const connectSupportAgentToChat = async (UID: string) => {
-    console.log(UID);
     try {
       const response = await fetch("http://localhost:3001/getFromQueue", {
         method: "POST",
@@ -64,10 +63,15 @@ export const SupportContextProvider: React.FC<SupportContextProviderProps> = ({
   };
 
   const saveUID = (uid: string) => {
+    localStorage.setItem("UID", uid);
     setSupportAgentUid(uid);
   };
 
   const getUID = () => {
+    const storedUID = localStorage.getItem("UID");
+    if (storedUID) {
+      return storedUID;
+    }
     return supportAgentUid;
   };
 

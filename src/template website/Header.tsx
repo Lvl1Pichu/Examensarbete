@@ -12,9 +12,9 @@ const Header: React.FC = () => {
 
   const handleLogout = async () => {
     try {
+      CometChat.logout();
       await fetch("http://localhost:3001/logout", { method: "POST" });
       setIsAuthenticated(false);
-      CometChat.logout();
     } catch (error) {
       console.error("Logout failed:", error);
     }
