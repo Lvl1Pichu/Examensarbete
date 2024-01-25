@@ -62,15 +62,27 @@ export const ChatModal = () => {
     const ID = cometChatContext.formatIDForCometChat(formData.email);
 
     try {
-      await createUserAndHandleGroup(ID);
+      await createUserAndHandleGroup(ID).then();
     } catch (error) {
       console.error("Error handling form submission:", error);
     }
   };
 
   const createUserAndHandleGroup = async (ID: string) => {
-    await cometChatContext.createOrLoginUser(formData.name, ID);
-    await handleGroup(ID);
+    try {
+      const userCreatedOrLoggedIn = await cometChatContext.createOrLoginUser(
+        formData.name,
+        ID
+      );
+      if (userCreatedOrLoggedIn) {
+        await handleGroup(ID);
+      } else {
+        console.error("User creation/login failed");
+      }
+    } catch (error) {
+      console.error("Error in createUserAndHandleGroup:", error);
+      throw error; // Re-throw error to be caught in handleSubmit
+    }
   };
 
   const handleGroup = async (ID: string) => {

@@ -128,12 +128,13 @@ app.get("/GetCustomerData/:id", async (req, res) => {
 
   try {
     // Read the database.json file
-    const data = await fs.readFile("database.json", "utf8");
-    const database = JSON.parse(data);
+    const database = await fs.readFile("database.json", "utf-8");
+    const data = JSON.parse(database);
 
     // Check if the ID exists in the database
-    if (database[id]) {
+    if (data[id]) {
       res.status(200).json(database[id]);
+      console.log(data);
     } else {
       res.status(404).json({ message: "Data not found for the given ID" });
     }

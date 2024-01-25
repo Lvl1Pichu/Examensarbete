@@ -110,11 +110,12 @@ export const SupportPage: React.FC = () => {
         const Group = await CometChat.getGroup(groupID);
         setChattingWithGroup(Group);
         setIsInGroup(true);
+        SupportContext.setIsChatActive(true);
       }
     };
 
     retrieveConnectedGroup();
-  }, []);
+  }, [SupportContext]);
 
   const handleStartChat = async () => {
     const UID = SupportContext.getUID();
@@ -130,6 +131,7 @@ export const SupportPage: React.FC = () => {
         setChattingWithGroup(fetchedGroup);
         setGroupGUID(fetchedGroup.getGuid());
         setIsInGroup(true);
+        SupportContext.setIsChatActive(true);
         SupportContext.saveCustomerInfo(fetchedGroup.getGuid());
         localStorage.setItem(
           "chattingWithGroup",
@@ -158,21 +160,27 @@ export const SupportPage: React.FC = () => {
 
   const handleEndChat = async () => {
     try {
-      await CometChat.leaveGroup(groupGUID);
-      console.log("Left CometChat group");
+      if (ChattingWithGroup) {
+        await CometChat.leaveGroup(ChattingWithGroup.getGuid());
+        console.log("Left CometChat group");
 
-      await fetch("http://localhost:3001/removeGroup", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ GUID: groupGUID }),
-      });
+        await fetch("http://localhost:3001/removeGroup", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ GUID: groupGUID }),
+        });
 
-      console.log("Group removed from backend");
-      setIsInGroup(false);
+        console.log("Group removed from backend");
+        setIsInGroup(false);
+        SupportContext.setIsChatActive(false);
+        setChattingWithGroup(undefined);
+        localStorage.removeItem("chattingWithGroup");
+      }
     } catch (error) {
       console.error("Error ending the chat:", error);
+      console.log(groupGUID);
     }
   };
 

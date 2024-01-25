@@ -6,6 +6,8 @@ type SupportContextType = {
   connectSupportAgentToChat: (UID: string) => Promise<CometChat.Group>;
   isAuthenticated: boolean;
   setIsAuthenticated: (value: boolean) => void;
+  isChatActive: boolean;
+  setIsChatActive: (value: boolean) => void;
   saveUID: (uid: string) => void;
   getUID: () => string | null;
   saveCustomerInfo: (ID: string) => void;
@@ -26,6 +28,8 @@ export const SupportContextProvider: React.FC<SupportContextProviderProps> = ({
     return isAuth === "true";
   });
 
+  const [isChatActive, setIsChatActive] = useState(false);
+
   const [customerInformation, setCustomerInformation] = useState<
     string | undefined
   >();
@@ -40,9 +44,8 @@ export const SupportContextProvider: React.FC<SupportContextProviderProps> = ({
         body: JSON.stringify({ UID }),
       });
       const { GUID, needsToJoinGroup } = await response.json();
-
       if (!GUID) {
-        throw new Error("No GUID available for connecting to chat");
+        alert("No GUID available for connecting to chat. The queue is empty.");
       }
       if (needsToJoinGroup) {
         const fetchedGroup = await CometChat.joinGroup(
@@ -86,6 +89,8 @@ export const SupportContextProvider: React.FC<SupportContextProviderProps> = ({
         getUID,
         saveCustomerInfo,
         getCustomerInfo,
+        isChatActive,
+        setIsChatActive,
       }}
     >
       {children}

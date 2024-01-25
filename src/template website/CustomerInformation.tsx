@@ -49,38 +49,46 @@ export const CustomerInformation: React.FC = () => {
     problem: "",
     email: "",
   });
-  const { getCustomerInfo } = useSupportContext();
+  const { getCustomerInfo, isChatActive } = useSupportContext();
 
   useEffect(() => {
-    const GUID = getCustomerInfo();
-    if (GUID) {
-      const localStorageData = localStorage.getItem(`customerData_${GUID}`);
-      if (localStorageData) {
-        // If data exists in local storage, use it
-        setCustomerData(JSON.parse(localStorageData));
-      } else {
-        // Fetch data from the API
-        const fetchCustomerData = async () => {
-          try {
-            const response = await fetch(
-              `http://localhost:3001/GetCustomerData/${GUID}`
-            );
-            if (!response.ok) {
-              throw new Error(`HTTP error! status: ${response.status}`);
+    if (isChatActive) {
+      const GUID = getCustomerInfo();
+      if (GUID) {
+        const localStorageData = localStorage.getItem(`customerData_${GUID}`);
+        if (localStorageData) {
+          // If data exists in local storage, use it
+          setCustomerData(JSON.parse(localStorageData));
+        } else {
+          // Fetch data from the API
+          const fetchCustomerData = async () => {
+            try {
+              const response = await fetch(
+                `http://localhost:3001/GetCustomerData/${GUID}`
+              );
+              if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+              }
+              const data = await response.json();
+              setCustomerData(data); // Update state with the fetched data
+              localStorage.setItem(
+                `customerData_${GUID}`,
+                JSON.stringify(data)
+              ); // Store data in local storage
+            } catch (error) {
+              console.error("Error fetching customer data:", error);
             }
-            const data = await response.json();
-            setCustomerData(data); // Update state with the fetched data
-            localStorage.setItem(`customerData_${GUID}`, JSON.stringify(data)); // Store data in local storage
-          } catch (error) {
-            console.error("Error fetching customer data:", error);
-          }
-        };
+          };
 
-        fetchCustomerData();
+          fetchCustomerData();
+        }
       }
+    } else {
+      // Handle scenario when chat is not active
+      // E.g., clear data or display a message
+      setCustomerData({ name: "", email: "", problem: "" });
     }
-  }, [getCustomerInfo]);
-
+  }, [getCustomerInfo, isChatActive]);
   return (
     <CustomerInfoContainer>
       <Label>Name:</Label>
