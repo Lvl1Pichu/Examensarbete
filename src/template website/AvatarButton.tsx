@@ -6,6 +6,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import RemoveIcon from "@mui/icons-material/Remove";
 import QuestionAnswerIcon from "@mui/icons-material/QuestionAnswer";
 import { useCometChat } from "../CometChat/CometChatContext";
+import { useSupportContext } from "../Support Engine/SupportContext";
 
 export const ChatAvatarButton = () => {
   const [chatOpen, setChatOpen] = useState(false);
@@ -13,6 +14,7 @@ export const ChatAvatarButton = () => {
   const [minimized, setMinimized] = useState(false);
   const draggableRef = useRef(null);
   const cometChatContext = useCometChat();
+  const supportContext = useSupportContext();
 
   useEffect(() => {
     localStorage.setItem("chatModalPosition", JSON.stringify(position));
@@ -20,7 +22,6 @@ export const ChatAvatarButton = () => {
 
   const openChat = () => {
     if (minimized) {
-      setChatOpen(true);
       setPosition({ x: position.x, y: position.y });
       setMinimized(false);
     } else {
@@ -31,12 +32,16 @@ export const ChatAvatarButton = () => {
 
   const closeChat = () => {
     setChatOpen(false);
-    cometChatContext.logout();
+    const ID = supportContext.getCustomerInfo();
+
+    if (ID) {
+      console.log(ID);
+      cometChatContext.logout(ID);
+    }
   };
 
   const minimizeChat = () => {
     setMinimized(true);
-    setChatOpen(false);
   };
 
   const restorePosition = () => {
@@ -48,13 +53,18 @@ export const ChatAvatarButton = () => {
 
   return (
     <>
-      {!chatOpen && (
+      {minimized && (
+        <MinimizedChat onClick={openChat}>
+          <QuestionAnswerIcon style={{ color: "white" }} />
+        </MinimizedChat>
+      )}
+      {!chatOpen && !minimized && (
         <AvatarButton onClick={openChat}>
           <AvatarImage src="src\resources\ChatPicture.png" alt="User Avatar" />
         </AvatarButton>
       )}
 
-      {chatOpen && (
+      {chatOpen && !minimized && (
         <Draggable
           defaultPosition={position}
           handle=".handle"
@@ -90,6 +100,27 @@ export const ChatAvatarButton = () => {
     </>
   );
 };
+
+const MinimizedChat = styled.div`
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 50px;
+  height: 50px;
+  border: 2px solid #6f03fc;
+  border-radius: 50%;
+  background-color: #6f03fc;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: #68347c;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  }
+`;
 
 const HeaderContainer = styled.div`
   display: flex;

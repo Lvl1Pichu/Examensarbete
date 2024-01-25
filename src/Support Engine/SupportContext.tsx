@@ -3,11 +3,15 @@ import { ReactNode, createContext, useContext, useState } from "react";
 import { CometChat } from "@cometchat/chat-sdk-javascript";
 
 type SupportContextType = {
-  connectSupportAgentToChat: () => Promise<CometChat.Group>;
+  connectSupportAgentToChat: (UID: string) => Promise<CometChat.Group>;
   isAuthenticated: boolean;
   setIsAuthenticated: (value: boolean) => void;
+  isChatActive: boolean;
+  setIsChatActive: (value: boolean) => void;
   saveUID: (uid: string) => void;
-  getUID: () => string;
+  getUID: () => string | null;
+  saveCustomerInfo: (ID: string) => void;
+  getCustomerInfo: () => string | undefined;
 };
 
 type SupportContextProviderProps = {
@@ -19,24 +23,29 @@ const SupportContext = createContext<SupportContextType | undefined>(undefined);
 export const SupportContextProvider: React.FC<SupportContextProviderProps> = ({
   children,
 }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState(() => {
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
     const isAuth = localStorage.getItem("isAuthenticated");
     return isAuth === "true";
   });
 
-  const connectSupportAgentToChat = async () => {
+  const [isChatActive, setIsChatActive] = useState(false);
+
+  const [customerInformation, setCustomerInformation] = useState<
+    string | undefined
+  >();
+
+  const connectSupportAgentToChat = async (UID: string) => {
     try {
       const response = await fetch("http://localhost:3001/getFromQueue", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ uid: getUID() }),
+        body: JSON.stringify({ UID }),
       });
       const { GUID, needsToJoinGroup } = await response.json();
-
       if (!GUID) {
-        throw new Error("No GUID available for connecting to chat");
+        alert("No GUID available for connecting to chat. The queue is empty.");
       }
       if (needsToJoinGroup) {
         const fetchedGroup = await CometChat.joinGroup(
@@ -54,14 +63,20 @@ export const SupportContextProvider: React.FC<SupportContextProviderProps> = ({
     }
   };
 
-  let supportAgentUid = "";
-
   const saveUID = (uid: string) => {
-    supportAgentUid = uid;
+    localStorage.setItem("UID", uid);
   };
 
   const getUID = () => {
-    return supportAgentUid;
+    return localStorage.getItem("UID");
+  };
+
+  const saveCustomerInfo = (ID: string) => {
+    setCustomerInformation(ID);
+  };
+
+  const getCustomerInfo = () => {
+    return customerInformation;
   };
 
   return (
@@ -72,6 +87,10 @@ export const SupportContextProvider: React.FC<SupportContextProviderProps> = ({
         setIsAuthenticated,
         saveUID,
         getUID,
+        saveCustomerInfo,
+        getCustomerInfo,
+        isChatActive,
+        setIsChatActive,
       }}
     >
       {children}

@@ -11,19 +11,17 @@ const port = 3001;
 
 let supportQueue = [];
 let ChatsWithSupportAgent = [];
+let isAuthenticated = false;
 
 async function loadSupportQueue() {
   try {
     const fileContents = await fs.readFile("supportQueue.txt", "utf-8");
-    supportQueue = fileContents.split("\n");
+    supportQueue = fileContents
+      .trim()
+      .split("\n")
+      .filter((line) => line);
   } catch (error) {
-    if (error.code === "ENOENT") {
-      console.log(
-        "supportQueue.txt does not exist, starting with an empty queue."
-      );
-    } else {
-      console.error("Error reading from supportQueue.txt:", error);
-    }
+    console.error("Error reading from supportQueue.txt:", error);
   }
 }
 
@@ -65,20 +63,84 @@ app.post("/queue", async (req, res) => {
 });
 
 app.post("/getFromQueue", async (req, res) => {
-  const { uid } = req.body;
-  const joinedChat = ChatsWithSupportAgent.find((chat) => chat.uid === uid);
+  const { UID } = req.body;
 
+  const joinedChat = ChatsWithSupportAgent.find((chat) => chat.uid === UID);
   if (joinedChat) {
-    // If the agent has already joined, just return the GUID without needing to join again
     res.status(200).json({ GUID: joinedChat.GUID, needsToJoinGroup: false });
   } else if (supportQueue.length > 0) {
-    // If the agent hasn't joined, they need to join the group now
+    // Dequeue the GUID
     const GUID = supportQueue.shift();
-    ChatsWithSupportAgent.push({ GUID, uid });
-    await fs.writeFile("supportQueue.txt", supportQueue.join("\n"), "utf8");
-    res.status(200).json({ GUID, needsToJoinGroup: true });
+    // Add to ChatsWithSupportAgent
+    ChatsWithSupportAgent.push({ GUID, UID });
+    // Write the updated queue back to the file
+    try {
+      await fs.writeFile("supportQueue.txt", supportQueue.join("\n"), "utf-8");
+      res.status(200).json({ GUID, needsToJoinGroup: true });
+    } catch (error) {
+      console.error("Error writing to supportQueue.txt:", error);
+      res.status(500).json({ message: "Error updating queue file" });
+    }
   } else {
     res.status(401).json({ error: "No available chats in the queue." });
+  }
+});
+
+app.post("/SaveGroupData", async (req, res) => {
+  const { formData, ID } = req.body;
+
+  try {
+    let database = {};
+
+    try {
+      const data = await fs.readFile("database.json", "utf8");
+      // Initialize database with an empty object if the file is empty
+      database = data ? JSON.parse(data) : {};
+    } catch (error) {
+      if (error.code === "ENOENT") {
+        console.log("database.json does not exist, creating new file.");
+      } else {
+        console.error("Error reading from database.json:", error);
+        throw error;
+      }
+    }
+
+    // Update the database object with new data
+    database[ID] = formData;
+
+    // Write the updated database back to database.json
+    await fs.writeFile(
+      "database.json",
+      JSON.stringify(database, null, 2),
+      "utf8"
+    );
+    res.status(200).json({ message: "Group data saved successfully" });
+  } catch (error) {
+    console.error("Error in /SaveGroupData endpoint:", error);
+    res
+      .status(500)
+      .json({ message: "Error saving group data", error: error.message });
+  }
+});
+
+app.get("/GetCustomerData/:id", async (req, res) => {
+  const id = req.params.id;
+
+  try {
+    // Read the database.json file
+    const database = await fs.readFile("database.json", "utf-8");
+    const data = JSON.parse(database);
+
+    // Check if the ID exists in the database
+    if (data[id]) {
+      res.status(200).json(database[id]);
+      console.log(data);
+    } else {
+      res.status(404).json({ message: "Data not found for the given ID" });
+    }
+  } catch (error) {
+    console.error("Error reading from the database:", error);
+    res.status(500).json({ message: "Error retrieving data" });
   }
 });
 
@@ -87,6 +149,7 @@ app.post("/login", (req, res) => {
 
   if (email === SupportAgent.email && password === SupportAgent.password) {
     req.session.isAuthenticated = true;
+    isAuthenticated = true;
     res.status(200).json({ message: "Logged in successfully" });
   } else {
     req.session.isAuthenticated = false;
@@ -100,9 +163,31 @@ app.post("/logout", (req, res) => {
       console.error("Session destruction error:", err);
       res.status(500).send("Error logging out");
     } else {
+      isAuthenticated = false;
       res.send("Logged out");
     }
   });
+});
+
+app.get("/validate-session", (req, res) => {
+  if (isAuthenticated === true) {
+    res.status(200).json({ isAuthenticated: true });
+  } else {
+    res.status(200).json({ isAuthenticated: false });
+  }
+});
+
+app.post("/removeGroup", async (req, res) => {
+  const { GUID } = req.body;
+  try {
+    ChatsWithSupportAgent = ChatsWithSupportAgent.filter(
+      (chat) => chat.GUID !== GUID
+    );
+    res.status(200).json({ message: "Group removed successfully" });
+  } catch (error) {
+    console.error("Error updating supportQueue", error);
+    res.status(500).json({ message: "Error updating queue file" });
+  }
 });
 
 app.listen(port, () => {

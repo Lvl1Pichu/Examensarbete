@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-
+import { useSupportContext } from "../Support Engine/SupportContext";
 const CustomerInfoContainer = styled.div`
   padding: 20px;
   display: flex;
@@ -11,63 +11,94 @@ const CustomerInfoContainer = styled.div`
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
   font-family: "Arial", sans-serif;
   height: 100%;
+  padding: 20px;
+  width: 100%;
+  max-width: 600px;
+  margin: auto;
 `;
 
 const Label = styled.span`
   font-weight: bold;
   color: #333333;
   margin-bottom: 10px;
+  width: 100%;
 `;
+
 const InfoText = styled.p`
+  word-break: break-all;
   margin: 0 0 20px 0;
   padding: 10px;
-  width: calc(100% - 20px);
-  background-color: #f9f9f9;
+  width: 100%; // Use 100% width for responsiveness
   border: 1px solid #e1e1e1;
   border-radius: 5px;
-  transition: background-color 0.3s, box-shadow 0.3s;
+  font-size: 1em; // Use relative unit for font size
 
   &:hover {
     background-color: #eef2f7;
     box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2);
   }
-`;
-interface CustomerInformationProps {
-  groupId: string;
-}
 
-export const CustomerInformation: React.FC<CustomerInformationProps> = ({
-  groupId,
-}) => {
-  const [name, setName] = useState("");
-  const [problem, setProblem] = useState("");
-  const [email, setEmail] = useState("");
+  @media (max-width: 768px) {
+    font-size: 0.9em; // Slightly smaller font size for smaller screens
+  }
+`;
+
+export const CustomerInformation: React.FC = () => {
+  const [customerData, setCustomerData] = useState({
+    name: "",
+    problem: "",
+    email: "",
+  });
+  const { getCustomerInfo, isChatActive } = useSupportContext();
 
   useEffect(() => {
-    const fetchGroupInfo = async () => {
-      const groupData = {
-        name: "John Doe",
-        problem: "Issue with payment processing",
-        email: "johndoe@example.com",
-      };
-      setName(groupData.name);
-      setProblem(groupData.problem);
-      setEmail(groupData.email);
-    };
+    if (isChatActive) {
+      const GUID = getCustomerInfo();
+      if (GUID) {
+        const localStorageData = localStorage.getItem(`customerData_${GUID}`);
+        if (localStorageData) {
+          // If data exists in local storage, use it
+          setCustomerData(JSON.parse(localStorageData));
+        } else {
+          // Fetch data from the API
+          const fetchCustomerData = async () => {
+            try {
+              const response = await fetch(
+                `http://localhost:3001/GetCustomerData/${GUID}`
+              );
+              if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+              }
+              const data = await response.json();
+              setCustomerData(data); // Update state with the fetched data
+              localStorage.setItem(
+                `customerData_${GUID}`,
+                JSON.stringify(data)
+              ); // Store data in local storage
+            } catch (error) {
+              console.error("Error fetching customer data:", error);
+            }
+          };
 
-    fetchGroupInfo();
-  }, [groupId]);
-
+          fetchCustomerData();
+        }
+      }
+    } else {
+      // Handle scenario when chat is not active
+      // E.g., clear data or display a message
+      setCustomerData({ name: "", email: "", problem: "" });
+    }
+  }, [getCustomerInfo, isChatActive]);
   return (
     <CustomerInfoContainer>
       <Label>Name:</Label>
-      <InfoText>{name}</InfoText>
-
-      <Label>Problem:</Label>
-      <InfoText>{problem}</InfoText>
+      <InfoText>{customerData.name}</InfoText>
 
       <Label>Email:</Label>
-      <InfoText>{email}</InfoText>
+      <InfoText>{customerData.email}</InfoText>
+
+      <Label>Problem:</Label>
+      <InfoText>{customerData.problem}</InfoText>
     </CustomerInfoContainer>
   );
 };

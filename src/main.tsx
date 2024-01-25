@@ -11,7 +11,7 @@ import {
 import { HomePage } from "./template website/Pages/HomePage.tsx";
 import Login from "./template website/Pages/LogInPage.tsx";
 import { CometChatProvider } from "./CometChat/CometChatContext.tsx";
-import { SupportContextProvider } from "./Support Engine/MessageContext.tsx";
+import { SupportContextProvider } from "./Support Engine/SupportContext.tsx";
 import { SupportPage } from "./template website/Pages/SupportPage.tsx";
 
 interface PrivateRouteProps {

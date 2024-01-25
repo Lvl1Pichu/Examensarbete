@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useSupportContext } from "../../Support Engine/MessageContext";
+import { useSupportContext } from "../../Support Engine/SupportContext";
 import { useCometChat } from "../../CometChat/CometChatContext";
 
 const Login = () => {
@@ -39,10 +39,8 @@ const Login = () => {
         setIsAuthenticated(true);
         localStorage.setItem("isAuthenticated", "true");
         const uid = cometChatContext.formatIDForCometChat(email);
-        cometChatContext.createOrLoginUser(uid, "SupportAgent");
-        console.log("User logged in");
+        await cometChatContext.createOrLoginUser("SupportAgent", uid);
         SupportContext.saveUID(uid);
-        console.log("UID Saved");
         navigate("/");
       } else {
         console.error(data.message);

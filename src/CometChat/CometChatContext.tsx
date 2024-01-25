@@ -10,14 +10,14 @@ import {
 
 type CometChatContextType = {
   loginUser: (UID: string) => Promise<User>;
-  createOrLoginUser: (name: string, UID: string) => Promise<void>;
+  createOrLoginUser: (name: string, UID: string) => Promise<boolean>;
   createGroup: (GUID: string) => Promise<CometChat.Group>;
   formatIDForCometChat: (stringToBeFormatted: string) => string;
   sendMessage: (
     groupId: string,
     text: string
   ) => Promise<TextMessage | MediaMessage | CustomMessage | BaseMessage>;
-  logout: () => Promise<void>;
+  logout: (ID: string) => Promise<void>;
 };
 
 type CometChatProviderProps = {
@@ -56,25 +56,41 @@ export const CometChatProvider: React.FC<CometChatProviderProps> = ({
       }
     }
   };
-
-  const createOrLoginUser = async (name: string, UID: string) => {
+  const createOrLoginUser = async (
+    name: string,
+    UID: string
+  ): Promise<boolean> => {
     try {
       await loginUser(UID);
       console.log("User has been logged in");
-    } catch {
-      const authKey: string = "64b7d20f19139473eb976616d751e447b3a8f516";
-      const user = new CometChat.User(UID);
-      user.setName(name);
-
-      try {
-        await CometChat.createUser(user, authKey);
-        await loginUser(UID);
-      } catch (error) {
-        console.log("User creation failed with exception:", error);
-        throw error;
+      return true; // Login successful
+    } catch (error) {
+      if (typeof error === "object" && error !== null && "code" in error) {
+        const typedError = error as { code: string; message: string };
+        if (typedError.code === "ERR_UID_NOT_FOUND") {
+          try {
+            const authKey = "64b7d20f19139473eb976616d751e447b3a8f516";
+            const user = new CometChat.User(UID);
+            user.setName(name);
+            await CometChat.createUser(user, authKey);
+            console.log("User created successfully");
+            await loginUser(UID);
+            return true; // User creation and login successful
+          } catch (creationError) {
+            console.error("User creation failed:", creationError);
+            return false; // User creation failed
+          }
+        } else {
+          console.error("Login failed:", typedError);
+          return false; // Other login errors
+        }
+      } else {
+        console.error("An unexpected error occurred:", error);
+        return false; // Unexpected error
       }
     }
   };
+
   const createGroup = async (GUID: string) => {
     const groupName: string = generateGroupName();
     const groupType: string = CometChat.GROUP_TYPE.PUBLIC;
@@ -118,7 +134,8 @@ export const CometChatProvider: React.FC<CometChatProviderProps> = ({
     }
   };
 
-  const logout = async () => {
+  const logout = async (ID: string) => {
+    await CometChat.deleteGroup(ID);
     await CometChat.logout();
   };
 

@@ -3,10 +3,10 @@ import {
   MessageComposerConfiguration,
   MessageHeaderConfiguration,
 } from "@cometchat/chat-uikit-react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { styled } from "styled-components";
 import { CustomerInformation } from "../CustomerInformation";
-import { useSupportContext } from "../../Support Engine/MessageContext";
+import { useSupportContext } from "../../Support Engine/SupportContext";
 import { Group, CometChat } from "@cometchat/chat-sdk-javascript";
 
 const SupportPageContainer = styled.div`
@@ -29,7 +29,7 @@ const HeaderButtonContainer = styled.div`
   align-items: center;
   gap: 2rem;
   padding: 10px;
-  background-color: #ffffff;
+  background-color: #cb99e9;
 `;
 
 const StyledButton = styled.button`
@@ -64,6 +64,9 @@ const ChatWindow = styled.div`
   width: 100%;
   height: 100%;
   box-shadow: 4px 4px 8px 0 rgba(0, 0, 0, 0.2);
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 
 const InformationAndChatContainer = styled.div`
@@ -72,16 +75,74 @@ const InformationAndChatContainer = styled.div`
   height: 100%;
 `;
 
+const Loader = styled.div`
+  border: 5px solid #f3f3f3; /* Light grey */
+  border-top: 5px solid #3498db; /* Blue */
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 2s linear infinite;
+
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+`;
+
 export const SupportPage: React.FC = () => {
   const [ChattingWithGroup, setChattingWithGroup] = useState<
     Group | undefined
   >();
   const SupportContext = useSupportContext();
   let fetchedGroup: Group;
+  const [groupGUID, setGroupGUID] = useState<string>("");
+  const [IsInGroup, setIsInGroup] = useState<boolean>(false);
+
+  useEffect(() => {
+    const retrieveConnectedGroup = async () => {
+      const savedGroup = localStorage.getItem("chattingWithGroup");
+      if (savedGroup) {
+        const groupID = JSON.parse(savedGroup);
+        const Group = await CometChat.getGroup(groupID);
+        setChattingWithGroup(Group);
+        setIsInGroup(true);
+        SupportContext.setIsChatActive(true);
+      }
+    };
+
+    retrieveConnectedGroup();
+  }, [SupportContext]);
 
   const handleStartChat = async () => {
-    fetchedGroup = await SupportContext.connectSupportAgentToChat();
-    setChattingWithGroup(fetchedGroup);
+    const UID = SupportContext.getUID();
+
+    if (!UID) {
+      console.error("UID is null. Unable to start chat.");
+      return;
+    }
+
+    try {
+      fetchedGroup = await SupportContext.connectSupportAgentToChat(UID);
+      if (fetchedGroup) {
+        setChattingWithGroup(fetchedGroup);
+        setGroupGUID(fetchedGroup.getGuid());
+        setIsInGroup(true);
+        SupportContext.setIsChatActive(true);
+        SupportContext.saveCustomerInfo(fetchedGroup.getGuid());
+        localStorage.setItem(
+          "chattingWithGroup",
+          JSON.stringify(fetchedGroup.getGuid())
+        );
+      } else {
+        console.error("Failed to join the group");
+      }
+    } catch (error) {
+      console.error("Error joining the group:", error);
+    }
   };
 
   const messageComposerConfig = new MessageComposerConfiguration({
@@ -90,15 +151,37 @@ export const SupportPage: React.FC = () => {
     AIIconURL: "",
   });
 
-  const emptyComponent = () => null;
+  const emptyComponent = <></>;
 
   const messageHeaderConfig = new MessageHeaderConfiguration({
     subtitleView: false,
     menu: emptyComponent,
   });
 
-  const handleEndChat = () => {
-    CometChat.deleteGroup(fetchedGroup.getGuid());
+  const handleEndChat = async () => {
+    try {
+      if (ChattingWithGroup) {
+        await CometChat.leaveGroup(ChattingWithGroup.getGuid());
+        console.log("Left CometChat group");
+
+        await fetch("http://localhost:3001/removeGroup", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ GUID: groupGUID }),
+        });
+
+        console.log("Group removed from backend");
+        setIsInGroup(false);
+        SupportContext.setIsChatActive(false);
+        setChattingWithGroup(undefined);
+        localStorage.removeItem("chattingWithGroup");
+      }
+    } catch (error) {
+      console.error("Error ending the chat:", error);
+      console.log(groupGUID);
+    }
   };
 
   return (
@@ -108,18 +191,22 @@ export const SupportPage: React.FC = () => {
           <HeaderButtonContainer>
             <StyledButton onClick={handleStartChat}>Start</StyledButton>
             <StyledButton onClick={handleEndChat}>End Chat</StyledButton>
-            <StyledButton>Pause</StyledButton>
           </HeaderButtonContainer>
           <InformationAndChatContainer>
             <CustomerInformationContainer>
-              <CustomerInformation groupId={""}></CustomerInformation>
+              <CustomerInformation></CustomerInformation>
             </CustomerInformationContainer>
+
             <ChatWindow>
-              <CometChatMessages
-                group={ChattingWithGroup}
-                messageComposerConfiguration={messageComposerConfig}
-                messageHeaderConfiguration={messageHeaderConfig}
-              />{" "}
+              {!IsInGroup ? (
+                <Loader />
+              ) : (
+                <CometChatMessages
+                  group={ChattingWithGroup}
+                  messageComposerConfiguration={messageComposerConfig}
+                  messageHeaderConfiguration={messageHeaderConfig}
+                />
+              )}
             </ChatWindow>
           </InformationAndChatContainer>
         </SupportEngineContainer>

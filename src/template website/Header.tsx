@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
-import { useSupportContext } from "../Support Engine/MessageContext";
+import { useSupportContext } from "../Support Engine/SupportContext";
 import { CometChat } from "@cometchat/chat-sdk-javascript";
 
 const Header: React.FC = () => {
@@ -10,11 +10,23 @@ const Header: React.FC = () => {
 
   const navigate = useNavigate();
 
+  useEffect(() => {
+    const checkAuthStatus = () => {
+      const isAuth = localStorage.getItem("isAuthenticated");
+      if (isAuth) {
+        setIsAuthenticated(isAuth === "true");
+      }
+    };
+
+    checkAuthStatus();
+  }, [setIsAuthenticated]);
+
   const handleLogout = async () => {
     try {
       await fetch("http://localhost:3001/logout", { method: "POST" });
+      await CometChat.logout();
       setIsAuthenticated(false);
-      CometChat.logout();
+      localStorage.setItem("isAuthenticated", "false");
     } catch (error) {
       console.error("Logout failed:", error);
     }
@@ -55,9 +67,13 @@ const Header: React.FC = () => {
           <NavLink href="#" onClick={() => setMenuOpen(false)}>
             Pricing
           </NavLink>
-          <NavLink href="#" onClick={() => setMenuOpen(false)}>
-            Log in
-          </NavLink>
+          {isAuthenticated ? (
+            <NavLink onClick={handleLogout}>Log out</NavLink>
+          ) : (
+            <NavLink onClick={() => navigate("/login")}>Log in</NavLink>
+          )}
+          {isAuthenticated && <NavLink href="/supportPage">Support</NavLink>}
+
           <ContactLink href="#" onClick={() => setMenuOpen(false)}>
             Contact Sales
           </ContactLink>
