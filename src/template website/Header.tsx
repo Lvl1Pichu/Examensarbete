@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import { useSupportContext } from "../Support Engine/SupportContext";
@@ -9,6 +9,17 @@ const Header: React.FC = () => {
   const { isAuthenticated, setIsAuthenticated } = useSupportContext();
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const checkAuthStatus = () => {
+      const isAuth = localStorage.getItem("isAuthenticated");
+      if (isAuth) {
+        setIsAuthenticated(isAuth === "true");
+      }
+    };
+
+    checkAuthStatus();
+  }, [setIsAuthenticated]);
 
   const handleLogout = async () => {
     try {

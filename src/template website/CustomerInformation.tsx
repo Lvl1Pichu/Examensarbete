@@ -11,9 +11,10 @@ const CustomerInfoContainer = styled.div`
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
   font-family: "Arial", sans-serif;
   height: 100%;
-  width: 100%; // Ensure full width
-  max-width: 600px; // Max width for larger screens
-  margin: auto; // Center the container on the page
+  padding: 20px;
+  width: 100%;
+  max-width: 600px;
+  margin: auto;
 `;
 
 const Label = styled.span`
@@ -24,27 +25,25 @@ const Label = styled.span`
 `;
 
 const InfoText = styled.p`
-  word-wrap: break-word; // Ensures text wraps to avoid overflow
+  word-break: break-all;
   margin: 0 0 20px 0;
   padding: 10px;
-  width: calc(100% - 20px);
-  background-color: #f9f9f9;
+  width: 100%; // Use 100% width for responsiveness
   border: 1px solid #e1e1e1;
   border-radius: 5px;
-  transition: background-color 0.3s, box-shadow 0.3s;
+  font-size: 1em; // Use relative unit for font size
+
   &:hover {
     background-color: #eef2f7;
     box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2);
   }
+
   @media (max-width: 768px) {
-    font-size: 14px; // Smaller font size for smaller screens
+    font-size: 0.9em; // Slightly smaller font size for smaller screens
   }
 `;
-interface CustomerInformationProps {
-  groupId: string;
-}
 
-export const CustomerInformation: React.FC<CustomerInformationProps> = ({}) => {
+export const CustomerInformation: React.FC = () => {
   const [customerData, setCustomerData] = useState({
     name: "",
     problem: "",

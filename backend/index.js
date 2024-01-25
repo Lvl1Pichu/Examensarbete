@@ -16,12 +16,14 @@ let isAuthenticated = false;
 async function loadSupportQueue() {
   try {
     const fileContents = await fs.readFile("supportQueue.txt", "utf-8");
-    supportQueue = fileContents.trim().split("\n").filter(line => line);
+    supportQueue = fileContents
+      .trim()
+      .split("\n")
+      .filter((line) => line);
   } catch (error) {
     console.error("Error reading from supportQueue.txt:", error);
   }
 }
-
 
 loadSupportQueue();
 
@@ -65,17 +67,12 @@ app.post("/getFromQueue", async (req, res) => {
 
   const joinedChat = ChatsWithSupportAgent.find((chat) => chat.uid === UID);
   if (joinedChat) {
-    console.log("Returning a joined chat")
     res.status(200).json({ GUID: joinedChat.GUID, needsToJoinGroup: false });
-    
   } else if (supportQueue.length > 0) {
     // Dequeue the GUID
-    console.log(supportQueue, "SupportQueue")
     const GUID = supportQueue.shift();
-    console.log(supportQueue, "After removing")
     // Add to ChatsWithSupportAgent
     ChatsWithSupportAgent.push({ GUID, UID });
-    console.log(ChatsWithSupportAgent, "ChatsWithSupportAgent")
     // Write the updated queue back to the file
     try {
       await fs.writeFile("supportQueue.txt", supportQueue.join("\n"), "utf-8");
@@ -112,31 +109,37 @@ app.post("/SaveGroupData", async (req, res) => {
     database[ID] = formData;
 
     // Write the updated database back to database.json
-    await fs.writeFile("database.json", JSON.stringify(database, null, 2), "utf8");
+    await fs.writeFile(
+      "database.json",
+      JSON.stringify(database, null, 2),
+      "utf8"
+    );
     res.status(200).json({ message: "Group data saved successfully" });
   } catch (error) {
     console.error("Error in /SaveGroupData endpoint:", error);
-    res.status(500).json({ message: "Error saving group data", error: error.message });
+    res
+      .status(500)
+      .json({ message: "Error saving group data", error: error.message });
   }
 });
 
-app.get('/GetCustomerData/:id', async (req, res) => {
+app.get("/GetCustomerData/:id", async (req, res) => {
   const id = req.params.id;
 
   try {
     // Read the database.json file
-    const data = await fs.readFile('database.json', 'utf8');
+    const data = await fs.readFile("database.json", "utf8");
     const database = JSON.parse(data);
 
     // Check if the ID exists in the database
     if (database[id]) {
       res.status(200).json(database[id]);
     } else {
-      res.status(404).json({ message: 'Data not found for the given ID' });
+      res.status(404).json({ message: "Data not found for the given ID" });
     }
   } catch (error) {
-    console.error('Error reading from the database:', error);
-    res.status(500).json({ message: 'Error retrieving data' });
+    console.error("Error reading from the database:", error);
+    res.status(500).json({ message: "Error retrieving data" });
   }
 });
 
@@ -145,7 +148,7 @@ app.post("/login", (req, res) => {
 
   if (email === SupportAgent.email && password === SupportAgent.password) {
     req.session.isAuthenticated = true;
-    isAuthenticated = true
+    isAuthenticated = true;
     res.status(200).json({ message: "Logged in successfully" });
   } else {
     req.session.isAuthenticated = false;
@@ -159,25 +162,26 @@ app.post("/logout", (req, res) => {
       console.error("Session destruction error:", err);
       res.status(500).send("Error logging out");
     } else {
-      isAuthenticated = false
+      isAuthenticated = false;
       res.send("Logged out");
     }
   });
 });
 
-app.get('/validate-session', (req, res) => {
-  if (isAuthenticated = true) {
+app.get("/validate-session", (req, res) => {
+  if (isAuthenticated === true) {
     res.status(200).json({ isAuthenticated: true });
   } else {
     res.status(200).json({ isAuthenticated: false });
   }
 });
 
-app.post('/removeGroup', async (req, res) => {
+app.post("/removeGroup", async (req, res) => {
   const { GUID } = req.body;
   try {
-    ChatsWithSupportAgent = ChatsWithSupportAgent.filter(chat => chat.GUID !== GUID);
-    console.log(ChatsWithSupportAgent, "After removing")
+    ChatsWithSupportAgent = ChatsWithSupportAgent.filter(
+      (chat) => chat.GUID !== GUID
+    );
     res.status(200).json({ message: "Group removed successfully" });
   } catch (error) {
     console.error("Error updating supportQueue", error);
