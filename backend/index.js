@@ -61,18 +61,21 @@ app.post("/queue", async (req, res) => {
 });
 
 app.post("/getFromQueue", async (req, res) => {
-  const { uid } = req.body;
+  const { UID } = req.body;
 
-  const joinedChat = ChatsWithSupportAgent.find((chat) => chat.uid === uid);
+  const joinedChat = ChatsWithSupportAgent.find((chat) => chat.uid === UID);
   if (joinedChat) {
+    console.log("Returning a joined chat")
     res.status(200).json({ GUID: joinedChat.GUID, needsToJoinGroup: false });
+    
   } else if (supportQueue.length > 0) {
     // Dequeue the GUID
+    console.log(supportQueue, "SupportQueue")
     const GUID = supportQueue.shift();
-
+    console.log(supportQueue, "After removing")
     // Add to ChatsWithSupportAgent
-    ChatsWithSupportAgent.push({ GUID, uid });
-
+    ChatsWithSupportAgent.push({ GUID, UID });
+    console.log(ChatsWithSupportAgent, "ChatsWithSupportAgent")
     // Write the updated queue back to the file
     try {
       await fs.writeFile("supportQueue.txt", supportQueue.join("\n"), "utf-8");
@@ -170,6 +173,17 @@ app.get('/validate-session', (req, res) => {
   }
 });
 
+app.post('/removeGroup', async (req, res) => {
+  const { GUID } = req.body;
+  try {
+    ChatsWithSupportAgent = ChatsWithSupportAgent.filter(chat => chat.GUID !== GUID);
+    console.log(ChatsWithSupportAgent, "After removing")
+    res.status(200).json({ message: "Group removed successfully" });
+  } catch (error) {
+    console.error("Error updating supportQueue", error);
+    res.status(500).json({ message: "Error updating queue file" });
+  }
+});
 
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
