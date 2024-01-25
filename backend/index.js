@@ -61,10 +61,8 @@ app.post("/queue", async (req, res) => {
 
 app.post("/getFromQueue", async (req, res) => {
   const { uid } = req.body;
-  const joinedChat = ChatsWithSupportAgent.find((chat) => chat.uid === uid);
-  console.log(joinedChat)
-  console.log(ChatsWithSupportAgent)
 
+  const joinedChat = ChatsWithSupportAgent.find((chat) => chat.uid === uid);
   if (joinedChat) {
     res.status(200).json({ GUID: joinedChat.GUID, needsToJoinGroup: false });
   } else if (supportQueue.length > 0) {

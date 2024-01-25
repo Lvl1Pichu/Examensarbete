@@ -134,7 +134,7 @@ export const ChatModal = () => {
     AIIconURL: "",
   });
 
-  const emptyComponent = () => null;
+  const emptyComponent = <></>;
 
   const messageHeaderConfig = new MessageHeaderConfiguration({
     subtitleView: false,

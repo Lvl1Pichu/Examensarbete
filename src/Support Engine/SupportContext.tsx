@@ -7,7 +7,7 @@ type SupportContextType = {
   isAuthenticated: boolean;
   setIsAuthenticated: (value: boolean) => void;
   saveUID: (uid: string) => void;
-  getUID: () => string;
+  getUID: () => string | null;
   saveCustomerInfo: (ID: string) => void;
   getCustomerInfo: () => string | undefined;
 };
@@ -29,8 +29,6 @@ export const SupportContextProvider: React.FC<SupportContextProviderProps> = ({
   const [customerInformation, setCustomerInformation] = useState<
     string | undefined
   >();
-
-  const [supportAgentUid, setSupportAgentUid] = useState<string>("");
 
   const connectSupportAgentToChat = async (UID: string) => {
     try {
@@ -64,15 +62,10 @@ export const SupportContextProvider: React.FC<SupportContextProviderProps> = ({
 
   const saveUID = (uid: string) => {
     localStorage.setItem("UID", uid);
-    setSupportAgentUid(uid);
   };
 
   const getUID = () => {
-    const storedUID = localStorage.getItem("UID");
-    if (storedUID) {
-      return storedUID;
-    }
-    return supportAgentUid;
+    return localStorage.getItem("UID");
   };
 
   const saveCustomerInfo = (ID: string) => {

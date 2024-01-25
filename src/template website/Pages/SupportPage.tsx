@@ -104,6 +104,16 @@ export const SupportPage: React.FC = () => {
 
   const handleStartChat = async () => {
     const UID = SupportContext.getUID();
+    console.log(UID, "UID");
+
+    // Check if UID is valid before proceeding
+    if (!UID) {
+      console.error("UID is null. Unable to start chat.");
+      // Handle the error appropriately. This could be showing an error message
+      // to the user or redirecting them to a login or error page.
+      return;
+    }
+
     try {
       fetchedGroup = await SupportContext.connectSupportAgentToChat(UID);
       if (fetchedGroup) {
