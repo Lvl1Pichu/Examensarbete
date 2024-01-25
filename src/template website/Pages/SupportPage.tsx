@@ -3,7 +3,7 @@ import {
   MessageComposerConfiguration,
   MessageHeaderConfiguration,
 } from "@cometchat/chat-uikit-react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { styled } from "styled-components";
 import { CustomerInformation } from "../CustomerInformation";
 import { useSupportContext } from "../../Support Engine/SupportContext";
@@ -102,6 +102,20 @@ export const SupportPage: React.FC = () => {
   const [groupGUID, setGroupGUID] = useState<string>("");
   const [IsInGroup, setIsInGroup] = useState<boolean>(false);
 
+  useEffect(() => {
+    const retrieveConnectedGroup = async () => {
+      const savedGroup = localStorage.getItem("chattingWithGroup");
+      if (savedGroup) {
+        const groupID = JSON.parse(savedGroup);
+        const Group = await CometChat.getGroup(groupID);
+        setChattingWithGroup(Group);
+        setIsInGroup(true);
+      }
+    };
+
+    retrieveConnectedGroup();
+  }, []);
+
   const handleStartChat = async () => {
     const UID = SupportContext.getUID();
 
@@ -117,6 +131,10 @@ export const SupportPage: React.FC = () => {
         setGroupGUID(fetchedGroup.getGuid());
         setIsInGroup(true);
         SupportContext.saveCustomerInfo(fetchedGroup.getGuid());
+        localStorage.setItem(
+          "chattingWithGroup",
+          JSON.stringify(fetchedGroup.getGuid())
+        );
       } else {
         console.error("Failed to join the group");
       }
@@ -168,7 +186,7 @@ export const SupportPage: React.FC = () => {
           </HeaderButtonContainer>
           <InformationAndChatContainer>
             <CustomerInformationContainer>
-              <CustomerInformation groupId={""}></CustomerInformation>
+              <CustomerInformation></CustomerInformation>
             </CustomerInformationContainer>
 
             <ChatWindow>

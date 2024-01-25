@@ -54,22 +54,30 @@ export const CustomerInformation: React.FC = () => {
   useEffect(() => {
     const GUID = getCustomerInfo();
     if (GUID) {
-      const fetchCustomerData = async () => {
-        try {
-          const response = await fetch(
-            `http://localhost:3001/GetCustomerData/${GUID}`
-          );
-          if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+      const localStorageData = localStorage.getItem(`customerData_${GUID}`);
+      if (localStorageData) {
+        // If data exists in local storage, use it
+        setCustomerData(JSON.parse(localStorageData));
+      } else {
+        // Fetch data from the API
+        const fetchCustomerData = async () => {
+          try {
+            const response = await fetch(
+              `http://localhost:3001/GetCustomerData/${GUID}`
+            );
+            if (!response.ok) {
+              throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const data = await response.json();
+            setCustomerData(data); // Update state with the fetched data
+            localStorage.setItem(`customerData_${GUID}`, JSON.stringify(data)); // Store data in local storage
+          } catch (error) {
+            console.error("Error fetching customer data:", error);
           }
-          const data = await response.json();
-          setCustomerData(data); // Update state with the fetched data
-        } catch (error) {
-          console.error("Error fetching customer data:", error);
-        }
-      };
+        };
 
-      fetchCustomerData();
+        fetchCustomerData();
+      }
     }
   }, [getCustomerInfo]);
 
