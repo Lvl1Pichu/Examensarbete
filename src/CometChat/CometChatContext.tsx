@@ -17,7 +17,7 @@ type CometChatContextType = {
     groupId: string,
     text: string
   ) => Promise<TextMessage | MediaMessage | CustomMessage | BaseMessage>;
-  logout: () => Promise<void>;
+  logout: (ID: string) => Promise<void>;
 };
 
 type CometChatProviderProps = {
@@ -118,9 +118,8 @@ export const CometChatProvider: React.FC<CometChatProviderProps> = ({
     }
   };
 
-  const logout = async () => {
-    const UID = await CometChat.getLoggedInUser();
-    CometChat.deleteGroup(UID);
+  const logout = async (ID: string) => {
+    await CometChat.deleteGroup(ID);
     await CometChat.logout();
   };
 

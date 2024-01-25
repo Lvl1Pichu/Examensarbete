@@ -6,6 +6,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import RemoveIcon from "@mui/icons-material/Remove";
 import QuestionAnswerIcon from "@mui/icons-material/QuestionAnswer";
 import { useCometChat } from "../CometChat/CometChatContext";
+import { useSupportContext } from "../Support Engine/SupportContext";
 
 export const ChatAvatarButton = () => {
   const [chatOpen, setChatOpen] = useState(false);
@@ -13,6 +14,7 @@ export const ChatAvatarButton = () => {
   const [minimized, setMinimized] = useState(false);
   const draggableRef = useRef(null);
   const cometChatContext = useCometChat();
+  const supportContext = useSupportContext();
 
   useEffect(() => {
     localStorage.setItem("chatModalPosition", JSON.stringify(position));
@@ -30,7 +32,12 @@ export const ChatAvatarButton = () => {
 
   const closeChat = () => {
     setChatOpen(false);
-    cometChatContext.logout();
+    const ID = supportContext.getCustomerInfo();
+
+    if (ID) {
+      console.log(ID);
+      cometChatContext.logout(ID);
+    }
   };
 
   const minimizeChat = () => {
