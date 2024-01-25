@@ -12,9 +12,10 @@ const Header: React.FC = () => {
 
   const handleLogout = async () => {
     try {
-      CometChat.logout();
       await fetch("http://localhost:3001/logout", { method: "POST" });
+      await CometChat.logout();
       setIsAuthenticated(false);
+      localStorage.setItem("isAuthenticated", "false");
     } catch (error) {
       console.error("Logout failed:", error);
     }
@@ -55,9 +56,13 @@ const Header: React.FC = () => {
           <NavLink href="#" onClick={() => setMenuOpen(false)}>
             Pricing
           </NavLink>
-          <NavLink href="#" onClick={() => setMenuOpen(false)}>
-            Log in
-          </NavLink>
+          {isAuthenticated ? (
+            <NavLink onClick={handleLogout}>Log out</NavLink>
+          ) : (
+            <NavLink onClick={() => navigate("/login")}>Log in</NavLink>
+          )}
+          {isAuthenticated && <NavLink href="/supportPage">Support</NavLink>}
+
           <ContactLink href="#" onClick={() => setMenuOpen(false)}>
             Contact Sales
           </ContactLink>

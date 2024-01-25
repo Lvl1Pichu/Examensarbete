@@ -11,6 +11,7 @@ const port = 3001;
 
 let supportQueue = [];
 let ChatsWithSupportAgent = [];
+let isAuthenticated = false;
 
 async function loadSupportQueue() {
   try {
@@ -141,6 +142,7 @@ app.post("/login", (req, res) => {
 
   if (email === SupportAgent.email && password === SupportAgent.password) {
     req.session.isAuthenticated = true;
+    isAuthenticated = true
     res.status(200).json({ message: "Logged in successfully" });
   } else {
     req.session.isAuthenticated = false;
@@ -154,10 +156,20 @@ app.post("/logout", (req, res) => {
       console.error("Session destruction error:", err);
       res.status(500).send("Error logging out");
     } else {
+      isAuthenticated = false
       res.send("Logged out");
     }
   });
 });
+
+app.get('/validate-session', (req, res) => {
+  if (isAuthenticated = true) {
+    res.status(200).json({ isAuthenticated: true });
+  } else {
+    res.status(200).json({ isAuthenticated: false });
+  }
+});
+
 
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
