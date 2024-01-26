@@ -137,6 +137,7 @@ export const SupportPage: React.FC = () => {
           "chattingWithGroup",
           JSON.stringify(fetchedGroup.getGuid())
         );
+        SupportContext.setIsChatActive(true);
       } else {
         console.error("Failed to join the group");
       }
